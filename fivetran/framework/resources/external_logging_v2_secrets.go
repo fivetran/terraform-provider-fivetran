@@ -35,7 +35,7 @@ func externalLoggingV2ConfigSecrets(ctx context.Context, config tfsdk.Config) (m
 // validateExternalLoggingV2RequiredFields checks required config fields, counting secret
 // fields provided through config_secrets. It skips the check while config_secrets is
 // unknown, because the provided secret fields can't be known yet.
-func validateExternalLoggingV2RequiredFields(ctx context.Context, config tfsdk.Config, planConfig map[string]interface{}, meta *metadata.LogServiceMetadata, diags *diag.Diagnostics) {
+func validateExternalLoggingV2RequiredFields(ctx context.Context, config tfsdk.Config, planConfig map[string]interface{}, meta *metadata.LogServiceMetadata, wording dynamicWording, diags *diag.Diagnostics) {
 	secrets, secretsDiags := externalLoggingV2ConfigSecretsValue(ctx, config)
 	diags.Append(secretsDiags...)
 	if diags.HasError() {
@@ -49,5 +49,5 @@ func validateExternalLoggingV2RequiredFields(ctx context.Context, config tfsdk.C
 	if diags.HasError() {
 		return
 	}
-	validateRequiredDynamicFields(mergeConfigSecrets(planConfig, secretsMap), &meta.Config, path.Root("config"), diags, externalLoggingV2Wording)
+	validateRequiredDynamicFields(mergeConfigSecrets(planConfig, secretsMap), &meta.Config, path.Root("config"), diags, wording)
 }

@@ -1,26 +1,32 @@
 package schema
 
 import (
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 func ExternalLoggingV2ResourceSchema() resourceSchema.Schema {
 	return resourceSchema.Schema{
-		Description: "Manages the external logging service of a destination (group).",
+		Description: "Manages the external logging service of a destination (group), or the account-level external logging service when `group_id` is not set.",
 		Attributes: map[string]resourceSchema.Attribute{
 			"id": resourceSchema.StringAttribute{
 				Computed:    true,
-				Description: "The unique identifier for the log service within the Fivetran system. It matches `group_id`.",
+				Description: "The unique identifier for the log service within the Fivetran system: the ID of the destination (group) for a destination log service, or the account ID for the account-level log service.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"group_id": resourceSchema.StringAttribute{
-				Required:    true,
-				Description: "The unique identifier for the group (destination) the log service belongs to. Changing this forces the resource to be replaced.",
+				Optional:    true,
+				Description: "The unique identifier for the group (destination) the log service belongs to. Omit it to manage the account-level log service. Changing this, including setting or removing it, forces the resource to be replaced.",
+				Validators: []validator.String{
+					// An empty ID would neither address a destination nor mean the account level.
+					stringvalidator.LengthAtLeast(1),
+				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

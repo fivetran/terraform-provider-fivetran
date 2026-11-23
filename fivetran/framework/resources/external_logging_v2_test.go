@@ -29,9 +29,10 @@ func TestExternalLoggingV2SchemaShape(t *testing.T) {
 	}
 
 	attrs := schemaResp.Schema.Attributes
+	// without group_id the resource manages the account-level log service
 	groupId, ok := attrs["group_id"].(resourceSchema.StringAttribute)
-	if !ok || !groupId.Required {
-		t.Fatalf("group_id must be a required string attribute, got %T", attrs["group_id"])
+	if !ok || !groupId.Optional || groupId.Computed {
+		t.Fatalf("group_id must be an optional, non-computed string attribute, got %T", attrs["group_id"])
 	}
 	service, ok := attrs["service"].(resourceSchema.StringAttribute)
 	if !ok || !service.Required {

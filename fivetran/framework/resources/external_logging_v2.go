@@ -33,6 +33,13 @@ var externalLoggingV2Wording = dynamicWording{
 	},
 }
 
+func externalLoggingV2WordingFor(accountLevel bool) dynamicWording {
+	if accountLevel {
+		return accountExternalLoggingWording
+	}
+	return externalLoggingV2Wording
+}
+
 func ExternalLoggingV2() resource.Resource {
 	return &externalLoggingV2{}
 }
@@ -61,15 +68,17 @@ func (r *externalLoggingV2) addUnconfiguredClientError(diags *diag.Diagnostics) 
 	)
 }
 
-// ImportState reads the log service by its ID, which is the ID of the group (destination) it belongs to.
+// ImportState reads the log service by its ID: the ID of the group (destination) it belongs to, or
+// the account ID for the account-level log service. The import ID "account" is an alias for the
+// account-level log service; state stores its real ID, the account ID.
 func (r *externalLoggingV2) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	if r.GetClient() == nil {
 		r.addUnconfiguredClientError(&resp.Diagnostics)
 		return
 	}
 
-	response, err := r.readExternalLogging(ctx, req.ID)
-	if err != nil || response.Data.Id == "" {
+	response, accountLevel, err := r.readForImport(ctx, req.ID)
+	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Import External Logging Resource.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
@@ -90,7 +99,7 @@ func (r *externalLoggingV2) ImportState(ctx context.Context, req resource.Import
 		ConfigSecretsVersion: types.Int64Null(),
 	}
 	mask := model.ExternalLoggingV2ImportConfigMask(response.Data.Config, meta)
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, mask, types.DynamicNull())...)
+	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, mask, types.DynamicNull(), accountLevel)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -146,14 +155,7 @@ func (r *externalLoggingV2) Create(ctx context.Context, req resource.CreateReque
 	enabled := core.GetBoolOrDefault(data.Enabled, true)
 	runSetupTests := core.GetBoolOrDefault(data.RunSetupTests, false)
 
-	// The group-level create endpoint doesn't take run_setup_tests, so tests are run through the
-	// dedicated setup-tests endpoint once the service exists.
-	response, err := r.GetClient().NewExternalLoggingCreate().
-		GroupId(data.GroupId.ValueString()).
-		Service(data.Service.ValueString()).
-		Enabled(enabled).
-		ConfigCustom(&requestConfig).
-		DoCustomWithUserAgentSuffix(ctx, externalLoggingV2UserAgentSuffix)
+	response, err := r.createExternalLogging(ctx, externalLoggingV2TargetOf(data), data.Service.ValueString(), enabled, requestConfig)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create External Logging Resource.",
@@ -162,7 +164,7 @@ func (r *externalLoggingV2) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMap, data.Config)...)
+	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMap, data.Config, data.IsAccountLevel())...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -175,7 +177,7 @@ func (r *externalLoggingV2) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	if runSetupTests {
-		r.runSetupTests(ctx, data.Id.ValueString(), &resp.Diagnostics)
+		r.runSetupTests(ctx, externalLoggingV2TargetOf(data), &resp.Diagnostics)
 	}
 }
 
@@ -191,7 +193,7 @@ func (r *externalLoggingV2) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	response, err := r.readExternalLogging(ctx, data.Id.ValueString())
+	response, err := r.readExternalLogging(ctx, externalLoggingV2TargetOf(data))
 	if err != nil {
 		if strings.HasPrefix(response.Code, "NotFound") {
 			resp.State.RemoveResource(ctx)
@@ -221,7 +223,7 @@ func (r *externalLoggingV2) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 	runSetupTests := data.RunSetupTests
 
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMask, data.Config)...)
+	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMask, data.Config, data.IsAccountLevel())...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -275,7 +277,7 @@ func (r *externalLoggingV2) Update(ctx context.Context, req resource.UpdateReque
 	}
 	// Secrets are sent when config_secrets_version changes or when they move from config, without
 	// immutable and readonly fields, which ordinary config updates never send either.
-	configPatch = applyConnectionV2ConfigSecretsToPatch(configPatch, secrets, stateConfig, slot, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
+	configPatch = applyConnectionV2SecretsToPatch(configPatch, secrets, stateConfig, slot, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
 
 	enabledPlan := core.GetBoolOrDefault(plan.Enabled, true)
 	enabledChanged := enabledPlan != core.GetBoolOrDefault(state.Enabled, true)
@@ -283,21 +285,21 @@ func (r *externalLoggingV2) Update(ctx context.Context, req resource.UpdateReque
 	runSetupTestsRequested := runSetupTestsPlan && !core.GetBoolOrDefault(state.RunSetupTests, false)
 
 	hasChanges := len(configPatch) > 0 || enabledChanged
-	id := state.Id.ValueString()
+	// group_id can't change in place: it forces a replacement.
+	target := externalLoggingV2TargetOf(state)
 
 	switch {
 	case hasChanges:
-		updateSvc := r.GetClient().NewExternalLoggingUpdate().
-			ExternalLoggingId(id).
-			RunSetupTests(runSetupTestsPlan)
+		var enabledUpdate *bool
 		if enabledChanged {
-			updateSvc.Enabled(enabledPlan)
+			enabledUpdate = &enabledPlan
 		}
+		var configUpdate map[string]interface{}
 		if len(configPatch) > 0 {
-			updateSvc.ConfigCustom(&configPatch)
+			configUpdate = configPatch
 		}
 
-		response, err := updateSvc.DoCustomWithUserAgentSuffix(ctx, externalLoggingV2UserAgentSuffix)
+		response, err := r.updateExternalLogging(ctx, target, enabledUpdate, runSetupTestsPlan, configUpdate)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Update External Logging Resource.",
@@ -306,7 +308,7 @@ func (r *externalLoggingV2) Update(ctx context.Context, req resource.UpdateReque
 			return
 		}
 
-		resp.Diagnostics.Append(state.ReadFromResponse(ctx, response, meta, planConfig, plan.Config)...)
+		resp.Diagnostics.Append(state.ReadFromResponse(ctx, response, meta, planConfig, plan.Config, target.accountLevel())...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -315,7 +317,7 @@ func (r *externalLoggingV2) Update(ctx context.Context, req resource.UpdateReque
 	case runSetupTestsRequested:
 		// The API rejects a PATCH without update parameters, so tests are triggered through
 		// the dedicated setup-tests endpoint.
-		r.runSetupTests(ctx, id, &resp.Diagnostics)
+		r.runSetupTests(ctx, target, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -355,9 +357,7 @@ func (r *externalLoggingV2) Delete(ctx context.Context, req resource.DeleteReque
 		return
 	}
 
-	deleteResponse, err := r.GetClient().NewExternalLoggingDelete().
-		ExternalLoggingId(data.Id.ValueString()).
-		DoWithUserAgentSuffix(ctx, externalLoggingV2UserAgentSuffix)
+	deleteResponse, err := r.deleteExternalLogging(ctx, externalLoggingV2TargetOf(data))
 	if err != nil && !strings.HasPrefix(deleteResponse.Code, "NotFound") {
 		resp.Diagnostics.AddError(
 			"Unable to Delete External Logging Resource.",
@@ -382,7 +382,7 @@ func (r *externalLoggingV2) ValidateConfig(ctx context.Context, req resource.Val
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	validateConfigSecretsOverlap(configMap, secretsMap, &resp.Diagnostics)
+	validateConnectionV2SecretsOverlap(configMap, secretsMap, path.Root("config"), configSecretsPath, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() || r.GetSkipPlanTimeValidation() {
 		return
 	}
@@ -449,7 +449,9 @@ func (r *externalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyP
 	}
 
 	isCreate := req.State.Raw.IsNull()
-	// Changing service or group_id replaces the log service, so the new one must be validated as a create.
+	wording := externalLoggingV2WordingFor(plan.IsAccountLevel())
+	// Changing service or group_id (including between a destination and the account level) replaces
+	// the log service, so the new one must be validated as a create.
 	replaced := false
 	var state model.ExternalLoggingV2ResourceModel
 	stateConfig := map[string]interface{}(nil)
@@ -462,12 +464,12 @@ func (r *externalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyP
 		}
 		serviceChanged := knownAndChanged(plan.Service, state.Service)
 		if serviceChanged {
-			// A destination can have only one log service: Terraform deletes the old one first,
-			// and a replacement that fails validation would leave the destination without one.
-			externalLoggingV2Wording.replacementWarning(path.Root("service"), &resp.Diagnostics)
+			// A destination, and the account, can have only one log service: Terraform deletes the
+			// old one first, and a replacement that fails validation would leave it without one.
+			wording.replacementWarning(path.Root("service"), &resp.Diagnostics)
 		}
-		replaced = serviceChanged || knownAndChanged(plan.GroupId, state.GroupId)
-		secrets := configSecretsFromConfig(ctx, req.Config, true, &resp.Diagnostics)
+		replaced = serviceChanged || groupIdChanged(plan.GroupId, state.GroupId)
+		secrets, _ := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, true, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -492,22 +494,22 @@ func (r *externalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyP
 	}
 
 	if isCreate || replaced {
-		validateExternalLoggingV2RequiredFields(ctx, req.Config, planConfig, meta, &resp.Diagnostics)
+		validateExternalLoggingV2RequiredFields(ctx, req.Config, planConfig, meta, wording, &resp.Diagnostics)
 		return
 	}
 
 	service := plan.Service.ValueString()
 	comparable := withoutUntrackedImmutableSecrets(planConfig, stateConfig, &meta.Config, &resp.Diagnostics)
-	hasImmutableReplacement := appendImmutableRequiresReplace(comparable, stateConfig, &meta.Config, path.Root("config"), resp, service, "", externalLoggingV2Wording)
+	hasImmutableReplacement := appendImmutableRequiresReplace(comparable, stateConfig, &meta.Config, path.Root("config"), resp, service, "", wording)
 
 	// A secret moved from config to config_secrets can still be compared with its tracked value,
 	// so changing an immutable one while moving it recreates the log service.
-	secrets := configSecretsFromConfig(ctx, req.Config, true, &resp.Diagnostics)
+	secrets, _ := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, true, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 	var secretsReplacement resource.ModifyPlanResponse
-	if appendImmutableRequiresReplace(movedConfigSecrets(secrets, stateConfig), stateConfig, &meta.Config, configSecretsPath, &secretsReplacement, service, "", externalLoggingV2Wording) {
+	if appendImmutableRequiresReplace(movedConnectionV2Secrets(secrets, stateConfig), stateConfig, &meta.Config, configSecretsPath, &secretsReplacement, service, "", wording) {
 		// Write-only values are null in the plan, so nested replacement paths do not
 		// exist there. Keep field-specific warnings, but replace at the attribute root.
 		resp.RequiresReplace.Append(configSecretsPath)
@@ -516,44 +518,78 @@ func (r *externalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyP
 	resp.Diagnostics.Append(secretsReplacement.Diagnostics...)
 
 	if hasImmutableReplacement {
-		validateExternalLoggingV2RequiredFields(ctx, req.Config, planConfig, meta, &resp.Diagnostics)
+		validateExternalLoggingV2RequiredFields(ctx, req.Config, planConfig, meta, wording, &resp.Diagnostics)
 	}
 }
 
-func (r *externalLoggingV2) readExternalLogging(ctx context.Context, id string) (externallogging.ExternalLoggingCustomResponse, error) {
-	return r.GetClient().NewExternalLoggingDetails().
-		ExternalLoggingId(id).
-		DoCustomWithUserAgentSuffix(ctx, externalLoggingV2UserAgentSuffix)
+// externalLoggingV2AccountImportId is the import ID alias for the account-level log service, for users
+// who don't know their account ID. Group IDs are generated words joined by "_", so no group has it.
+const externalLoggingV2AccountImportId = "account"
+
+// readForImport finds the log service an import ID addresses. The alias "account" addresses the
+// account-level log service. A group ID addresses the log service of that destination. Otherwise the
+// ID must be the account ID, which is the ID of the account-level log service. Group and account IDs
+// never collide, so the group lookup goes first and the account one is only tried when it fails; the
+// group lookup's error is reported when neither matches.
+//
+// The alias is handled before the group lookup, and the group lookup only counts when it returns the
+// import ID: GET /external-logging/account is the account-level endpoint, so a group lookup for
+// "account" would otherwise import the account-level log service as the log service of a destination
+// with the account ID as group_id.
+func (r *externalLoggingV2) readForImport(ctx context.Context, id string) (externallogging.ExternalLoggingCustomResponse, bool, error) {
+	if id == externalLoggingV2AccountImportId {
+		response, err := r.readExternalLogging(ctx, externalLoggingV2Target{})
+		if err == nil && response.Data.Id == "" {
+			err = fmt.Errorf("no account-level external logging service found")
+		}
+		return response, true, err
+	}
+
+	groupResponse, groupErr := r.readExternalLogging(ctx, externalLoggingV2Target{groupId: id})
+	if groupErr == nil && groupResponse.Data.Id != "" && groupResponse.Data.Id == id {
+		return groupResponse, false, nil
+	}
+
+	accountResponse, accountErr := r.readExternalLogging(ctx, externalLoggingV2Target{})
+	if accountErr == nil && accountResponse.Data.Id != "" && accountResponse.Data.Id == id {
+		return accountResponse, true, nil
+	}
+
+	if groupErr == nil {
+		groupErr = fmt.Errorf("no external logging service found for destination or account ID %q", id)
+	}
+	return groupResponse, false, groupErr
 }
 
-func (r *externalLoggingV2) runSetupTests(ctx context.Context, id string, diags *diag.Diagnostics) {
-	response, err := r.GetClient().NewExternalLoggingSetupTests().
-		ExternalLoggingId(id).
-		DoWithUserAgentSuffix(ctx, externalLoggingV2UserAgentSuffix)
-	if err != nil {
-		diags.AddError(
-			"Unable to Run External Logging Setup Tests.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
-		)
-		return
-	}
-	warnFailedLogSetupTests(response.Data.SetupTests, diags)
+// groupIdChanged reports a group_id change, including switching between a destination log service
+// (group_id set) and the account-level one (group_id null). Both replace the log service.
+func groupIdChanged(plan, state types.String) bool {
+	return !plan.IsUnknown() && !state.IsUnknown() && !plan.Equal(state)
 }
 
 // logServiceMetadata returns the metadata describing a log service, or nil when the metadata API has
 // no description for it. Callers must treat nil as "no plan-time validation available".
 func (r *externalLoggingV2) logServiceMetadata(ctx context.Context, service string) (*metadata.LogServiceMetadata, error) {
-	cache := r.GetMetadataCache()
+	return readLogServiceMetadata(ctx, &r.ProviderResource, service, externalLoggingV2UserAgentSuffix)
+}
+
+// readLogServiceMetadata reads the metadata of a log service from /metadata/log-service-types/{service}
+// through the provider's metadata cache, or returns nil when the metadata API has no description for
+// it (for example a server that does not serve the endpoint yet). fivetran_external_logging_v2 and the
+// deprecated fivetran_account_external_logging_v2 share it and the cache; only the User-Agent suffix
+// differs. Without a configured client, only a cached answer is returned.
+func readLogServiceMetadata(ctx context.Context, p *core.ProviderResource, service, userAgentSuffix string) (*metadata.LogServiceMetadata, error) {
+	cache := p.GetMetadataCache()
 	if cache == nil {
 		cache = &sync.Map{}
 	}
-	if r.GetClient() == nil {
+	if p.GetClient() == nil {
 		if meta, ok, err := core.LoadCachedLogServiceMetadata(cache, service); ok || err != nil {
 			return meta, err
 		}
 		return nil, errUnconfiguredClient
 	}
-	return core.GetCachedLogServiceMetadataWithUserAgentSuffix(ctx, r.GetClient(), cache, service, externalLoggingV2UserAgentSuffix)
+	return core.GetCachedLogServiceMetadataWithUserAgentSuffix(ctx, p.GetClient(), cache, service, userAgentSuffix)
 }
 
 func addLogServiceMetadataError(service string, err error, diags *diag.Diagnostics) {

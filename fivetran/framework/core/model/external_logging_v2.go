@@ -21,14 +21,23 @@ type ExternalLoggingV2ResourceModel struct {
 	ConfigSecretsVersion types.Int64   `tfsdk:"config_secrets_version"`
 }
 
+func (d *ExternalLoggingV2ResourceModel) IsAccountLevel() bool {
+	return d.GroupId.IsNull()
+}
+
 // ReadFromResponse maps an API response into the model. configMask holds the config the user manages
 // (plan or prior state): only its keys are tracked, and masked secrets keep their local value.
-func (d *ExternalLoggingV2ResourceModel) ReadFromResponse(ctx context.Context, resp externallogging.ExternalLoggingCustomResponse, meta *metadata.LogServiceMetadata, configMask map[string]interface{}, configTemplate types.Dynamic) diag.Diagnostics {
+func (d *ExternalLoggingV2ResourceModel) ReadFromResponse(ctx context.Context, resp externallogging.ExternalLoggingCustomResponse, meta *metadata.LogServiceMetadata, configMask map[string]interface{}, configTemplate types.Dynamic, accountLevel bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	// A destination has at most one log service, and its ID is the group (destination) ID.
+	// A destination has at most one log service, and its ID is the group (destination) ID. The
+	// account-level log service has the account ID and no group.
 	d.Id = types.StringValue(resp.Data.Id)
-	d.GroupId = types.StringValue(resp.Data.Id)
+	if accountLevel {
+		d.GroupId = types.StringNull()
+	} else {
+		d.GroupId = types.StringValue(resp.Data.Id)
+	}
 	d.Service = types.StringValue(resp.Data.Service)
 	d.Enabled = types.BoolValue(resp.Data.Enabled)
 

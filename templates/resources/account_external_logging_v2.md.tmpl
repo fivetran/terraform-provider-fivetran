@@ -6,6 +6,8 @@ page_title: "Resource: fivetran_account_external_logging_v2"
 
 ~> This resource is in [Public Preview](https://fivetran.com/docs/core-concepts#releasephases).
 
+!> **Deprecated:** Use [`fivetran_external_logging_v2`](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/external_logging_v2) without `group_id` instead. It manages the same account-level log service, and a `moved` block moves this resource to it without recreating the log service. See [Migrating from `fivetran_account_external_logging_v2`](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/external_logging_v2#migrating-from-fivetran_account_external_logging_v2).
+
 Manages the account-level external logging service. An account can have at most one account-level log service. For log services attached to a destination, use `fivetran_external_logging`.
 
 `config` is a dynamic, service-specific object. When the Fivetran log service metadata API (`/metadata/log-service-types/{service}`) describes the log service, the accepted fields, types and required/immutable rules are validated at plan time. Otherwise the configuration is passed to the API as is, and the API validates it.

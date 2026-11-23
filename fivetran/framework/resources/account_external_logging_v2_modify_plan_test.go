@@ -48,7 +48,7 @@ func TestAccountExternalLoggingV2ModifyPlanOnCreateConfig(t *testing.T) {
 			t.Parallel()
 
 			cache := &sync.Map{}
-			cache.Store(logServiceMetadataCachePrefix+"datadog_log", &metadata.ConnectorMetadata{
+			cache.Store(core.LogServiceMetadataCacheKey("datadog_log"), &metadata.LogServiceMetadata{
 				Config: metadata.Property{
 					Required: []string{"api_key"},
 					Properties: map[string]*metadata.Property{
@@ -95,12 +95,12 @@ func TestAccountExternalLoggingV2ModifyPlanOnCreateConfig(t *testing.T) {
 	}
 }
 
-func accountExternalLoggingV2ForPlan(t *testing.T, services map[string]*metadata.ConnectorMetadata) *accountExternalLoggingV2 {
+func accountExternalLoggingV2ForPlan(t *testing.T, services map[string]*metadata.LogServiceMetadata) *accountExternalLoggingV2 {
 	t.Helper()
 
 	cache := &sync.Map{}
 	for service, meta := range services {
-		cache.Store(logServiceMetadataCachePrefix+service, meta)
+		cache.Store(core.LogServiceMetadataCacheKey(service), meta)
 	}
 
 	r := &accountExternalLoggingV2{}
@@ -158,8 +158,8 @@ func diagnosticsText(diags diag.Diagnostics) string {
 	return text.String()
 }
 
-func requiredApiKeyMetadata() *metadata.ConnectorMetadata {
-	return &metadata.ConnectorMetadata{Config: metadata.Property{
+func requiredApiKeyMetadata() *metadata.LogServiceMetadata {
+	return &metadata.LogServiceMetadata{Config: metadata.Property{
 		Required: []string{"api_key"},
 		Properties: map[string]*metadata.Property{
 			"api_key":  {Type: "string", Immutable: true},
@@ -173,7 +173,7 @@ func requiredApiKeyMetadata() *metadata.ConnectorMetadata {
 func TestAccountExternalLoggingV2ModifyPlanValidatesRequiredFieldsWhenServiceChanges(t *testing.T) {
 	t.Parallel()
 
-	r := accountExternalLoggingV2ForPlan(t, map[string]*metadata.ConnectorMetadata{
+	r := accountExternalLoggingV2ForPlan(t, map[string]*metadata.LogServiceMetadata{
 		"new_relic_log": requiredApiKeyMetadata(),
 		"datadog_log":   requiredApiKeyMetadata(),
 	})
@@ -205,7 +205,7 @@ func TestAccountExternalLoggingV2ModifyPlanValidatesRequiredFieldsWhenServiceCha
 func TestAccountExternalLoggingV2ModifyPlanEmptyConfigIsAcceptedWhenServiceIsUnchanged(t *testing.T) {
 	t.Parallel()
 
-	r := accountExternalLoggingV2ForPlan(t, map[string]*metadata.ConnectorMetadata{"datadog_log": requiredApiKeyMetadata()})
+	r := accountExternalLoggingV2ForPlan(t, map[string]*metadata.LogServiceMetadata{"datadog_log": requiredApiKeyMetadata()})
 	req := accountExternalLoggingV2UpdateRequest(t, "datadog_log", map[string]interface{}{}, "datadog_log", map[string]interface{}{"api_key": "secret"})
 
 	var resp resource.ModifyPlanResponse
@@ -218,7 +218,7 @@ func TestAccountExternalLoggingV2ModifyPlanEmptyConfigIsAcceptedWhenServiceIsUnc
 func TestAccountExternalLoggingV2ModifyPlanDiagnosticsDescribeTheLogService(t *testing.T) {
 	t.Parallel()
 
-	r := accountExternalLoggingV2ForPlan(t, map[string]*metadata.ConnectorMetadata{"datadog_log": requiredApiKeyMetadata()})
+	r := accountExternalLoggingV2ForPlan(t, map[string]*metadata.LogServiceMetadata{"datadog_log": requiredApiKeyMetadata()})
 	forbidden := []string{"connection", "resync"}
 	assertDescribesLogService := func(t *testing.T, name string, diags diag.Diagnostics) {
 		t.Helper()

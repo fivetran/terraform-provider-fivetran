@@ -9,7 +9,8 @@ import (
 
 func AccountExternalLoggingV2ResourceSchema() resourceSchema.Schema {
 	return resourceSchema.Schema{
-		Description: "Manages the account-level external logging service.",
+		Description:        "Manages the account-level external logging service.",
+		DeprecationMessage: "Use fivetran_external_logging_v2 without group_id instead. A moved block moves the resource without recreating the log service (Terraform 1.8 or later).",
 		Attributes: map[string]resourceSchema.Attribute{
 			"id": resourceSchema.StringAttribute{
 				Computed:    true,

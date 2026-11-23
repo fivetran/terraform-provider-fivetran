@@ -6,7 +6,7 @@ page_title: "Resource: fivetran_external_logging_v2"
 
 ~> **Public Preview:** This resource is in public preview. Features and behavior may change based on feedback.
 
-Manages the external logging service of a destination (group). A destination can have at most one log service. For the account-level log service, use `fivetran_account_external_logging_v2`.
+Manages an external logging service: the one of a destination (group) when `group_id` is set, or the account-level one when it isn't. A destination, and the account, can each have at most one log service. Both levels accept the same services and `config` fields.
 
 `config` is a dynamic, service-specific object. When the Fivetran log service metadata API (`/metadata/log-service-types/{service}`) describes the log service, the accepted fields, types, enum values and required/readonly/immutable rules are validated at plan time. Otherwise the configuration is passed to the API as is, and the API validates it.
 
@@ -33,6 +33,24 @@ resource "fivetran_external_logging_v2" "log" {
 ```
 
 `config` is not sensitive, so its fields are shown in plan output. Pass secrets from sensitive variables, as above, so Terraform hides them, or set them in `config_secrets`.
+
+### Account-level log service
+
+Leave out `group_id` to manage the account-level log service:
+
+```hcl
+resource "fivetran_external_logging_v2" "account_log" {
+    service = "datadog_log"
+
+    config = {
+        api_key  = var.datadog_api_key
+        hostname = "hostname"
+        region   = "US1"
+    }
+}
+```
+
+-> The account-level log service needs account-level permissions: the API key's role must be allowed to view account security settings to read it, and to manage them to create, update or delete it. A key that can manage a destination's log service may not have these permissions.
 
 ### Keeping secrets out of state
 
@@ -69,7 +87,6 @@ resource "fivetran_external_logging_v2" "log" {
 ### Required
 
 - `config` (Dynamic) Service-specific log service configuration. The accepted fields depend on `service`; when the Fivetran metadata API describes the log service they are validated at plan time. `config` is not sensitive: set secrets in `config_secrets`, or pass them from sensitive variables.
-- `group_id` (String) The unique identifier for the group (destination) the log service belongs to. Changing this forces the resource to be replaced.
 - `service` (String) The name of the log service type within the Fivetran system. Supported log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `new_relic_log`, `splunkLog`, `stackdriver`. Changing this forces the resource to be replaced.
 
 ### Optional
@@ -79,17 +96,18 @@ resource "fivetran_external_logging_v2" "log" {
 - `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only secret config fields (fields with `format: password` in log service metadata, for example `api_key` or `token`). Accepts ephemeral values and is never stored in state. Values are sent on create and whenever `config_secrets_version` changes; immutable and readonly fields are only sent on create. Requires Terraform 1.11 or later.
 - `config_secrets_version` (Number) Change this value to send the current `config_secrets` to Fivetran, for example after rotating a secret.
 - `enabled` (Boolean) The boolean value specifying whether the log service is enabled. Defaults to `true`.
+- `group_id` (String) The unique identifier for the group (destination) the log service belongs to. Omit it to manage the account-level log service. Changing this, including setting or removing it, forces the resource to be replaced.
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run after the log service is created or updated. Defaults to `false`. This is a plan-only attribute and is not read back from the API.
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the log service within the Fivetran system. It matches `group_id`.
+- `id` (String) The unique identifier for the log service within the Fivetran system: the ID of the destination (group) for a destination log service, or the account ID for the account-level log service.
 
 ## Notes
 
 - `config` is not sensitive, so its fields are shown in plan and apply output, except values that come from sensitive variables. Secrets set in `config` are stored in state: protect the state file, or use `config_secrets` to keep secrets out of it.
 - Values the API masks (for example secrets) are kept from your configuration and are never read back.
-- Changing `service`, `group_id` or an immutable `config` field replaces the log service. Terraform deletes the existing service before it creates the new one, so log delivery for the destination stops until the new service exists.
+- Changing `service`, `group_id` or an immutable `config` field replaces the log service. This includes setting or removing `group_id`, which moves the log service between a destination and the account level. Terraform deletes the existing service before it creates the new one, so log delivery stops until the new service exists.
 - With `run_setup_tests = true`, the setup tests run after the log service is created, with every update, and when the attribute changes from `false` to `true` without any other change. Failed tests are reported as warnings.
 
 ## Migrating from `fivetran_external_logging`
@@ -175,9 +193,40 @@ Notes:
 - `run_setup_tests = true` in the new block runs the setup tests during the migration apply.
 - When metadata marks a secret as immutable, the plan warns that Terraform can't compare it with the imported state. The value isn't sent and doesn't recreate the log service.
 
+## Migrating from `fivetran_account_external_logging_v2`
+
+`fivetran_account_external_logging_v2` is deprecated. With Terraform 1.8 or later, move it to `fivetran_external_logging_v2` with a `moved` block. The log service isn't recreated or changed.
+
+1. Rename the resource type, keep the attributes, and add a `moved` block:
+
+```hcl
+resource "fivetran_external_logging_v2" "account_log" {
+    service = "datadog_log"
+
+    config = {
+        api_key  = var.datadog_api_key
+        hostname = "hostname"
+        region   = "US1"
+    }
+}
+
+moved {
+    from = fivetran_account_external_logging_v2.account_log
+    to   = fivetran_external_logging_v2.account_log
+}
+```
+
+2. Run `terraform plan`. It should show the move and no changes. Then run `terraform apply`.
+
+3. Delete the `moved` block, and update references from `fivetran_account_external_logging_v2.account_log` to `fivetran_external_logging_v2.account_log`.
+
+`config` is no longer sensitive, so plan output shows its fields. To hide secrets, pass them from sensitive variables, or move them to `config_secrets`.
+
+With older Terraform versions, migrate with `import` and `removed` blocks as described for `fivetran_external_logging` above, using the account ID as the import ID and no `group_id`.
+
 ## Import
 
-The log service ID is the ID of the destination (group) it belongs to. Use the destination ID as the import ID.
+The log service ID is the ID of the destination (group) it belongs to, or the account ID for the account-level log service. Use it as the import ID. To import the account-level log service without looking up your account ID, use `account` as the import ID: the imported state holds the account ID, the same as when you import by the account ID.
 
 1. Define an empty resource in your `.tf` configuration:
 
@@ -190,7 +239,7 @@ resource "fivetran_external_logging_v2" "my_imported_log" {
 2. Run the `terraform import` command:
 
 ```
-terraform import fivetran_external_logging_v2.my_imported_log {destination ID}
+terraform import fivetran_external_logging_v2.my_imported_log {destination ID, account ID or account}
 ```
 
 3. Use `terraform state show 'fivetran_external_logging_v2.my_imported_log'` to get the values, and paste them into your `.tf` configuration.
@@ -208,7 +257,7 @@ With Terraform 1.5 or later, you can also import the log service with an `import
 ```hcl
 import {
     to = fivetran_external_logging_v2.my_imported_log
-    id = "{destination ID}"
+    id = "{destination ID, account ID or account}"
 }
 ```
 

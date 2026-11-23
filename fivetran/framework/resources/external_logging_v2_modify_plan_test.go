@@ -48,10 +48,16 @@ func externalLoggingV2ForPlan(t *testing.T, services map[string]*metadata.LogSer
 	return r
 }
 
+// externalLoggingV2Model builds a destination log service model, or the account-level one when
+// groupId is empty.
 func externalLoggingV2Model(groupId, service string, config types.Dynamic) model.ExternalLoggingV2ResourceModel {
+	id, group := types.StringValue(groupId), types.StringValue(groupId)
+	if groupId == "" {
+		id, group = types.StringValue("account_id"), types.StringNull()
+	}
 	return model.ExternalLoggingV2ResourceModel{
-		Id:                   types.StringValue(groupId),
-		GroupId:              types.StringValue(groupId),
+		Id:                   id,
+		GroupId:              group,
 		Service:              types.StringValue(service),
 		Enabled:              types.BoolValue(true),
 		RunSetupTests:        types.BoolValue(false),
@@ -443,6 +449,69 @@ func TestExternalLoggingV2ValidateConfigSecretsOverlapWithoutMetadata(t *testing
 
 			assertErrorCount(t, resp.Diagnostics, 1)
 			assertDiagnosticPath(t, resp.Diagnostics, path.Root("config_secrets").AtName("api_key"))
+		})
+	}
+}
+
+func TestExternalLoggingV2ModifyPlanAccountLevel(t *testing.T) {
+	t.Parallel()
+
+	r := externalLoggingV2ForPlan(t, map[string]*metadata.LogServiceMetadata{
+		"datadog_log":   externalLoggingV2ApiKeyMetadata(),
+		"new_relic_log": externalLoggingV2ApiKeyMetadata(),
+	})
+
+	// service changed: missing required field + replacement warning, both about the account level
+	req := externalLoggingV2UpdateRequest(t,
+		"", "new_relic_log", map[string]interface{}{"hostname": "host"},
+		"", "datadog_log", map[string]interface{}{"api_key": "secret"})
+	var resp resource.ModifyPlanResponse
+	r.ModifyPlan(context.Background(), req, &resp)
+	assertErrorCount(t, resp.Diagnostics, 1)
+	assertWarningCount(t, resp.Diagnostics, 1)
+	if text := strings.ToLower(diagnosticsText(resp.Diagnostics)); !strings.Contains(text, "account-level") || strings.Contains(text, "destination") {
+		t.Errorf("diagnostics should be about the account-level log service: %s", text)
+	}
+
+	// immutable field changed: replacement planned
+	req = externalLoggingV2UpdateRequest(t,
+		"", "datadog_log", map[string]interface{}{"api_key": "new"},
+		"", "datadog_log", map[string]interface{}{"api_key": "old"})
+	resp = resource.ModifyPlanResponse{}
+	r.ModifyPlan(context.Background(), req, &resp)
+	if len(resp.RequiresReplace) != 1 {
+		t.Fatalf("RequiresReplace = %v, want config.api_key", resp.RequiresReplace)
+	}
+
+	// unchanged: nothing to report
+	req = externalLoggingV2UpdateRequest(t,
+		"", "datadog_log", map[string]interface{}{"api_key": "secret"},
+		"", "datadog_log", map[string]interface{}{"api_key": "secret"})
+	resp = resource.ModifyPlanResponse{}
+	r.ModifyPlan(context.Background(), req, &resp)
+	assertNoDiagnostics(t, resp.Diagnostics)
+}
+
+// Moving between a destination and the account level recreates the log service, so the new one is
+// validated as a create in both directions.
+func TestExternalLoggingV2ModifyPlanSwitchingLevelValidatesAsCreate(t *testing.T) {
+	t.Parallel()
+
+	r := externalLoggingV2ForPlan(t, map[string]*metadata.LogServiceMetadata{
+		"datadog_log": externalLoggingV2ApiKeyMetadata(),
+	})
+
+	for _, tc := range []struct{ name, planGroup, stateGroup string }{
+		{"destination to account", "", "group_id"},
+		{"account to destination", "group_id", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			req := externalLoggingV2UpdateRequest(t,
+				tc.planGroup, "datadog_log", map[string]interface{}{"hostname": "host"},
+				tc.stateGroup, "datadog_log", map[string]interface{}{"api_key": "secret", "hostname": "host"})
+			var resp resource.ModifyPlanResponse
+			r.ModifyPlan(context.Background(), req, &resp)
+			assertErrorCount(t, resp.Diagnostics, 1)
 		})
 	}
 }
