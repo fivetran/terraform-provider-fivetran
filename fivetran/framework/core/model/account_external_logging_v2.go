@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 
+	externallogging "github.com/fivetran/go-fivetran/external_logging"
 	"github.com/fivetran/go-fivetran/metadata"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -19,7 +20,7 @@ type AccountExternalLoggingV2ResourceModel struct {
 
 // ReadFromResponse maps an API response into the model. configMask holds the config the user manages
 // (plan or prior state): only its keys are tracked, and masked secrets keep their local value.
-func (d *AccountExternalLoggingV2ResourceModel) ReadFromResponse(ctx context.Context, resp core.AccountExternalLoggingResponse, meta *metadata.ConnectorMetadata, configMask map[string]interface{}, configTemplate types.Dynamic) diag.Diagnostics {
+func (d *AccountExternalLoggingV2ResourceModel) ReadFromResponse(ctx context.Context, resp externallogging.ExternalLoggingCustomResponse, meta *metadata.LogServiceMetadata, configMask map[string]interface{}, configTemplate types.Dynamic) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	d.Id = types.StringValue(resp.Data.Id)

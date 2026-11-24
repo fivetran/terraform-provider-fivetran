@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/fivetran/go-fivetran/common"
 	"github.com/fivetran/go-fivetran/metadata"
@@ -20,12 +19,8 @@ import (
 
 const accountExternalLoggingV2UserAgentSuffix = "fivetran_account_external_logging_v2"
 
-const logServiceMetadataCachePrefix = "log-service:"
-
-// noMetadataCachePrefix marks services for which the metadata API has no description, so the
-// negative answer is not requested again on every plan.
-const noMetadataCachePrefix = "no-metadata:"
-
+// accountExternalLoggingWording is also used by fivetran_external_logging_v2 for the account-level
+// log service.
 var accountExternalLoggingWording = dynamicWording{
 	missingRequiredField: func(name string) string {
 		return fmt.Sprintf("Log service metadata requires field %q when creating the account-level external logging service.", name)
@@ -71,7 +66,8 @@ func (r *accountExternalLoggingV2) ImportState(ctx context.Context, req resource
 		return
 	}
 
-	response, err := core.ReadAccountExternalLogging(ctx, r.GetClient(), accountExternalLoggingV2UserAgentSuffix)
+	response, err := r.GetClient().NewExternalLoggingAccountDetails().
+		DoCustomWithUserAgentSuffix(ctx, accountExternalLoggingV2UserAgentSuffix)
 	if err != nil || response.Data.Id == "" {
 		resp.Diagnostics.AddError(
 			"Unable to Import Account External Logging Resource.",
@@ -145,12 +141,15 @@ func (r *accountExternalLoggingV2) Create(ctx context.Context, req resource.Crea
 	enabled := core.GetBoolOrDefault(data.Enabled, true)
 	runSetupTests := core.GetBoolOrDefault(data.RunSetupTests, false)
 
-	response, err := core.CreateAccountExternalLogging(ctx, r.GetClient(), accountExternalLoggingV2UserAgentSuffix, core.AccountExternalLoggingCreateRequest{
-		Service:       data.Service.ValueString(),
-		Enabled:       &enabled,
-		Config:        configMap,
-		RunSetupTests: &runSetupTests,
-	})
+	createSvc := r.GetClient().NewExternalLoggingAccountCreate().
+		Service(data.Service.ValueString()).
+		Enabled(enabled).
+		RunSetupTests(runSetupTests)
+	// An empty config is left out of the request, as it was before the SDK had account-level services.
+	if len(configMap) > 0 {
+		createSvc.ConfigCustom(&configMap)
+	}
+	response, err := createSvc.DoCustomWithUserAgentSuffix(ctx, accountExternalLoggingV2UserAgentSuffix)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Account External Logging Resource.",
@@ -185,7 +184,8 @@ func (r *accountExternalLoggingV2) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	response, err := core.ReadAccountExternalLogging(ctx, r.GetClient(), accountExternalLoggingV2UserAgentSuffix)
+	response, err := r.GetClient().NewExternalLoggingAccountDetails().
+		DoCustomWithUserAgentSuffix(ctx, accountExternalLoggingV2UserAgentSuffix)
 	if err != nil {
 		if strings.HasPrefix(response.Code, "NotFound") {
 			resp.State.RemoveResource(ctx)
@@ -279,17 +279,16 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 
 	switch {
 	case hasChanges:
-		updateReq := core.AccountExternalLoggingUpdateRequest{
-			RunSetupTests: &runSetupTestsPlan,
-		}
+		updateSvc := r.GetClient().NewExternalLoggingAccountUpdate().
+			RunSetupTests(runSetupTestsPlan)
 		if enabledChanged {
-			updateReq.Enabled = &enabledPlan
+			updateSvc.Enabled(enabledPlan)
 		}
 		if len(configPatch) > 0 {
-			updateReq.Config = configPatch
+			updateSvc.ConfigCustom(&configPatch)
 		}
 
-		response, err := core.UpdateAccountExternalLogging(ctx, r.GetClient(), accountExternalLoggingV2UserAgentSuffix, updateReq)
+		response, err := updateSvc.DoCustomWithUserAgentSuffix(ctx, accountExternalLoggingV2UserAgentSuffix)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Update Account External Logging Resource.",
@@ -307,7 +306,8 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 	case runSetupTestsRequested:
 		// The API rejects a PATCH without update parameters, so tests are triggered through
 		// the dedicated setup-tests endpoint.
-		response, err := core.RunAccountExternalLoggingSetupTests(ctx, r.GetClient(), accountExternalLoggingV2UserAgentSuffix)
+		response, err := r.GetClient().NewExternalLoggingAccountSetupTests().
+			DoWithUserAgentSuffix(ctx, accountExternalLoggingV2UserAgentSuffix)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Run Account External Logging Setup Tests.",
@@ -346,7 +346,8 @@ func (r *accountExternalLoggingV2) Delete(ctx context.Context, req resource.Dele
 		return
 	}
 
-	deleteResponse, err := core.DeleteAccountExternalLogging(ctx, r.GetClient(), accountExternalLoggingV2UserAgentSuffix)
+	deleteResponse, err := r.GetClient().NewExternalLoggingAccountDelete().
+		DoWithUserAgentSuffix(ctx, accountExternalLoggingV2UserAgentSuffix)
 	if err != nil && !strings.HasPrefix(deleteResponse.Code, "NotFound") {
 		resp.Diagnostics.AddError(
 			"Unable to Delete Account External Logging Resource.",
@@ -474,44 +475,10 @@ func (r *accountExternalLoggingV2) ModifyPlan(ctx context.Context, req resource.
 	}
 }
 
-// logServiceMetadata returns the metadata describing a log service from
-// /metadata/log-service-types/{service}, or nil when the metadata API has no description for it
-// (for example a server that does not serve the endpoint yet). Callers must treat nil as
-// "no plan-time validation available".
-func (r *accountExternalLoggingV2) logServiceMetadata(ctx context.Context, service string) (*metadata.ConnectorMetadata, error) {
-	cache := r.GetMetadataCache()
-	if cache == nil {
-		cache = &sync.Map{}
-	}
-
-	// Log and connector metadata share the provider cache, so log entries get their own key space.
-	cacheKey := logServiceMetadataCachePrefix + service
-	if _, ok := cache.Load(noMetadataCachePrefix + cacheKey); ok {
-		return nil, nil
-	}
-	if meta, ok, err := core.LoadCachedConnectorMetadata(cache, cacheKey); ok || err != nil {
-		return meta, err
-	}
-	if r.GetClient() == nil {
-		return nil, errUnconfiguredClient
-	}
-
-	resp, err := core.ReadLogServiceMetadata(ctx, r.GetClient(), accountExternalLoggingV2UserAgentSuffix, service)
-	if err != nil {
-		if strings.HasPrefix(resp.Code, "NotFound") {
-			cache.Store(noMetadataCachePrefix+cacheKey, true)
-			return nil, nil
-		}
-		return nil, err
-	}
-
-	meta := resp.Data.ConnectorMetadata
-	actual, _ := cache.LoadOrStore(cacheKey, &meta)
-	cached, ok := actual.(*metadata.ConnectorMetadata)
-	if !ok {
-		return nil, fmt.Errorf("metadata cache contained unexpected type %T for log service %q", actual, service)
-	}
-	return cached, nil
+// logServiceMetadata returns the metadata describing a log service, or nil when the metadata API has
+// no description for it. Callers must treat nil as "no plan-time validation available".
+func (r *accountExternalLoggingV2) logServiceMetadata(ctx context.Context, service string) (*metadata.LogServiceMetadata, error) {
+	return readLogServiceMetadata(ctx, &r.ProviderResource, service, accountExternalLoggingV2UserAgentSuffix)
 }
 
 func dynamicIsUnknown(value types.Dynamic) bool {

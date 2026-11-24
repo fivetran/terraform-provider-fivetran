@@ -1,0 +1,146 @@
+---
+page_title: "Resource: fivetran_external_logging_v2"
+---
+
+# Resource: fivetran_external_logging_v2
+
+~> **Public Preview:** This resource is in public preview. Features and behavior may change based on feedback.
+
+Manages an external logging service: the one of a destination (group) when `group_id` is set, or the account-level one when it isn't. A destination, and the account, can each have at most one log service. Both levels accept the same services and `config` fields.
+
+`config` is a dynamic, service-specific object. When the Fivetran log service metadata API (`/metadata/log-service-types/{service}`) describes the log service, the accepted fields, types, enum values and required/readonly/immutable rules are validated at plan time. Otherwise the configuration is passed to the API as is, and the API validates it.
+
+## Example Usage
+
+```hcl
+variable "datadog_api_key" {
+    type      = string
+    sensitive = true
+}
+
+resource "fivetran_external_logging_v2" "log" {
+    group_id        = fivetran_destination_v2.destination.id
+    service         = "datadog_log"
+    enabled         = true
+    run_setup_tests = true
+
+    config = {
+        api_key  = var.datadog_api_key
+        hostname = "hostname"
+        region   = "US1"
+    }
+}
+```
+
+`config` is not sensitive, so its fields are shown in plan output. Pass secrets from sensitive variables, as above, so Terraform hides them, or set them in `config_secrets`.
+
+### Account-level log service
+
+Leave out `group_id` to manage the account-level log service:
+
+```hcl
+resource "fivetran_external_logging_v2" "account_log" {
+    service = "datadog_log"
+
+    config = {
+        api_key  = var.datadog_api_key
+        hostname = "hostname"
+        region   = "US1"
+    }
+}
+```
+
+-> The account-level log service needs account-level permissions: the API key's role must be allowed to view account security settings to read it, and to manage them to create, update or delete it. A key that can manage a destination's log service may not have these permissions.
+
+### Keeping secrets out of state
+
+Secrets set in `config` are stored in Terraform state. To keep them out of state, or to pass ephemeral values (for example from an `ephemeral` secret manager resource), set them in the write-only `config_secrets` attribute instead (Terraform 1.11 or later):
+
+```hcl
+ephemeral "google_secret_manager_secret_version" "datadog_api_key" {
+    secret = "datadog-api-key"
+}
+
+resource "fivetran_external_logging_v2" "log" {
+    group_id = fivetran_destination_v2.destination.id
+    service  = "datadog_log"
+
+    config = {
+        hostname = "hostname"
+        region   = "US1"
+    }
+
+    config_secrets = {
+        api_key = ephemeral.google_secret_manager_secret_version.datadog_api_key.secret_data
+    }
+    config_secrets_version = 1
+}
+```
+
+- A field can't be set in both `config` and `config_secrets`. When the log service metadata describes the service, `config_secrets` accepts only fields with `format: password`.
+- Terraform doesn't store `config_secrets`, so it can't detect when a secret changes. The values are sent on create and whenever `config_secrets_version` changes: increment it after rotating a secret. Fields that metadata marks as immutable or readonly are only sent on create.
+- To move a secret from `config` to `config_secrets`, remove it from `config` and add it to `config_secrets`. The moved value is sent in the same apply. Changing an immutable secret while moving it replaces the log service.
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Notes
+
+- `config` is not sensitive, so its fields are shown in plan and apply output, except values that come from sensitive variables. Secrets set in `config` are stored in state: protect the state file, or use `config_secrets` to keep secrets out of it.
+- Values the API masks (for example secrets) are kept from your configuration and are never read back.
+- Changing `service`, `group_id` or an immutable `config` field replaces the log service. This includes setting or removing `group_id`, which moves the log service between a destination and the account level. Terraform deletes the existing service before it creates the new one, so log delivery stops until the new service exists.
+- With `run_setup_tests = true`, the setup tests run after the log service is created, with every update, and when the attribute changes from `false` to `true` without any other change. Failed tests are reported as warnings.
+
+## Migrating from `fivetran_external_logging`
+
+`fivetran_external_logging_v2` manages the same API object as `fivetran_external_logging`, so you can migrate without recreating the log service. The ID stays the same: it's the ID of the destination (group). You can migrate with `import` and `removed` blocks (Terraform 1.7 or later) or with CLI commands. See the [migration guide](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/guides/external_logging_v2_migration).
+
+## Migrating from `fivetran_account_external_logging_v2`
+
+`fivetran_account_external_logging_v2` is deprecated. You can migrate it to `fivetran_external_logging_v2` without recreating the log service, with a `moved` block (Terraform 1.8 or later) or by re-importing the log service. See the [migration guide](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/guides/account_external_logging_v2_migration).
+
+## Import
+
+The log service ID is the ID of the destination (group) it belongs to, or the account ID for the account-level log service. Use it as the import ID. To import the account-level log service without looking up your account ID, use `account` as the import ID: the imported state holds the account ID, the same as when you import by the account ID.
+
+1. Define an empty resource in your `.tf` configuration:
+
+```hcl
+resource "fivetran_external_logging_v2" "my_imported_log" {
+
+}
+```
+
+2. Run the `terraform import` command:
+
+```
+terraform import fivetran_external_logging_v2.my_imported_log {destination ID, account ID or account}
+```
+
+3. Use `terraform state show 'fivetran_external_logging_v2.my_imported_log'` to get the values, and paste them into your `.tf` configuration.
+
+-> The API masks secrets, so imported state does not contain them. Add the secret values to `config` or `config_secrets` yourself. Readonly fields are not imported, because `config` doesn't accept them.
+
+-> Import tracks every config field the API returns, including defaults Fivetran added. If your configuration leaves some of them out, the first apply stops tracking them without changing them on the log service, and the plan shows a warning that lists them. To clear such a field, set it to `null` in `config`.
+
+### Import with an `import` block
+
+With Terraform 1.5 or later, you can also import the log service with an `import` block. The import then runs as part of `terraform plan` and `terraform apply`, so you can review it before it changes state.
+
+1. Add an `import` block to your `.tf` configuration:
+
+```hcl
+import {
+    to = fivetran_external_logging_v2.my_imported_log
+    id = "{destination ID, account ID or account}"
+}
+```
+
+2. Add the matching `fivetran_external_logging_v2` resource block yourself, or let Terraform generate it:
+
+```
+terraform plan -generate-config-out=generated.tf
+```
+
+3. Review the resource block. Add the secrets, which the generated block doesn't contain, to `config` or `config_secrets`. Then run `terraform plan` and check that it shows `1 to import` and `0 to destroy`.
+
+4. Run `terraform apply`, then delete the `import` block.

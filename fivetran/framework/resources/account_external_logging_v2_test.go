@@ -206,9 +206,12 @@ func TestAccountExternalLoggingV2LifecycleMock(t *testing.T) {
 
 // When the metadata API describes the log service, unknown config fields are rejected at plan time.
 func TestAccountExternalLoggingV2ValidatesConfigAgainstMetadataMock(t *testing.T) {
+	// The test provider and its metadata cache are shared across tests, and
+	// fivetran_external_logging_v2 uses the same cache, so this test uses a service whose metadata
+	// no other test stubs.
 	metadataBody := `{
-		"id": "grafana_loki",
-		"name": "Grafana Loki",
+		"id": "azure_monitor_log",
+		"name": "Azure Monitor",
 		"type": "Log",
 		"config": {
 			"type": "object",
@@ -225,7 +228,7 @@ func TestAccountExternalLoggingV2ValidatesConfigAgainstMetadataMock(t *testing.T
 		resource.TestCase{
 			PreCheck: func() {
 				tfmock.MockClient().Reset()
-				tfmock.MockClient().When(http.MethodGet, "/v1/metadata/log-service-types/grafana_loki").ThenCall(
+				tfmock.MockClient().When(http.MethodGet, "/v1/metadata/log-service-types/azure_monitor_log").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success",
 							tfmock.CreateMapFromJsonString(t, metadataBody)), nil
@@ -235,13 +238,13 @@ func TestAccountExternalLoggingV2ValidatesConfigAgainstMetadataMock(t *testing.T
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
-					Config: accountExternalLoggingV2TfConfig("grafana_loki", "true", `api_key = "secret"
+					Config: accountExternalLoggingV2TfConfig("azure_monitor_log", "true", `api_key = "secret"
 					unknown_field = "x"`),
 					PlanOnly:    true,
 					ExpectError: regexp.MustCompile(`Unsupported Dynamic Field`),
 				},
 				{
-					Config:      accountExternalLoggingV2TfConfig("grafana_loki", "true", `site = "datadoghq.com"`),
+					Config:      accountExternalLoggingV2TfConfig("azure_monitor_log", "true", `site = "datadoghq.com"`),
 					PlanOnly:    true,
 					ExpectError: regexp.MustCompile(`Missing Required Dynamic Field`),
 				},
