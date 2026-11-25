@@ -89,6 +89,7 @@ func (r *connectionV2) ImportState(ctx context.Context, req resource.ImportState
 	}
 
 	resp.Diagnostics.Append(storeImportedConfigFields(ctx, resp.Private, data.Config)...)
+	resp.Diagnostics.Append(setConnectionV2Imported(ctx, resp.Private, true)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -402,6 +403,8 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(updateImportedConfigFields(ctx, req, resp)...)
+	// The configured immutable fields are in state now, so plans compare them as usual.
+	resp.Diagnostics.Append(setConnectionV2Imported(ctx, resp.Private, false)...)
 }
 
 func (r *connectionV2) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

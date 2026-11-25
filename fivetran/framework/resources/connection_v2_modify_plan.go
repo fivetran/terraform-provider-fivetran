@@ -140,10 +140,20 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		return
 	}
 
+	// Until the first update after import, immutable fields the API didn't return are missing
+	// from state. Compare them against the filled-in state so they don't force a replacement.
+	compareConfig, compareAuth := stateConfig, stateAuth
+	imported, diags := isConnectionV2Imported(ctx, req.Private)
+	resp.Diagnostics.Append(diags...)
+	if imported {
+		compareConfig = fillImportedImmutableFields(planConfig, stateConfig, &meta.Config, path.Root("config"), true, state.Name, plan.Service.ValueString(), &resp.Diagnostics)
+		compareAuth = fillImportedImmutableFields(planAuth, stateAuth, &meta.Auth, path.Root("auth"), false, state.Name, plan.Service.ValueString(), &resp.Diagnostics)
+	}
+
 	service := plan.Service.ValueString()
-	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service, "", connectionWording)
+	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, compareConfig, &meta.Config, path.Root("config"), resp, service, "", connectionWording)
 	hasImmutableReplacement = appendMovedSecretsRequiresReplace(secrets, stateConfig, &meta.Config, configSecretsPath, resp, service) || hasImmutableReplacement
-	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service, "", connectionWording) || hasImmutableReplacement
+	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, compareAuth, &meta.Auth, path.Root("auth"), resp, service, "", connectionWording) || hasImmutableReplacement
 	hasImmutableReplacement = appendMovedSecretsRequiresReplace(authSecrets, stateAuth, &meta.Auth, authSecretsPath, resp, service) || hasImmutableReplacement
 	if hasImmutableReplacement {
 		validateRequired()

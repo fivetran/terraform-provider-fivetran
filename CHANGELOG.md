@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.57...HEAD)
 
+### Fixed
+- `fivetran_connection_v2`: after `terraform import`, an immutable `config` or `auth` field that the API doesn't return no longer plans a replacement of the connection. The main case is `schema_prefix`, which the API returns as the connection's top-level schema instead of in `config`. A configured `schema_prefix` is compared with the imported schema; for single-table connectors, whose schema is `schema.table`, `schema` is compared with the part before the dot and `table` or `table_group_name` with the part after it. A different value still plans a replacement. Any other immutable field missing from the imported state, including one inside an object or list such as an `auth` field (the API never returns `auth`), shows a warning, because Terraform can't check its value. Top-level immutable fields are never sent to the API; a nested one is sent with its parent object. The first apply after import stores the configured values in state, and later plans compare them as usual.
+
 ## [v1.9.57](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...v1.9.57) - 2026-11-25
 
 ### Added
