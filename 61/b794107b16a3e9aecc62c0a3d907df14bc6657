@@ -1,0 +1,47 @@
+CHANGELOG.md
+  s_d418b1ef941395::t_a414e03086bac9 10-12
+docs/guides/account_external_logging_v2_migration.md
+  s_d418b1ef941395::t_6b70f344c574d5 115
+docs/resources/destination_v2.md
+  s_d418b1ef941395::t_f2d198e5496cbf 87
+docs/resources/external_logging_v2.md
+  s_d418b1ef941395::t_c2eaa90d63eea2 143
+fivetran/framework/resources/account_external_logging_v2.go
+  s_d418b1ef941395::t_1698f9d3c08a69 403-405
+fivetran/framework/resources/connection_v2_import_mock_test.go
+  s_d418b1ef941395::t_c58e4dc93a43e2 41-50,102-107,110-128,130,137-141
+fivetran/framework/resources/connection_v2_modify_plan.go
+  s_d418b1ef941395::t_c564fa42446bec 21-23
+fivetran/framework/resources/destination_v2_modify_plan.go
+  s_d418b1ef941395::t_996fbdce9e2828 21-23
+fivetran/framework/resources/external_logging_v2.go
+  s_d418b1ef941395::t_eb5f7e1f1607f6 424-426
+fivetran/framework/resources/external_logging_v2_import_mock_test.go
+  s_d418b1ef941395::t_df23691d50bf05 49-51,138,150-151
+fivetran/framework/resources/imported_config_fields.go
+  s_d418b1ef941395::t_0d7cb2b40507c1 7,16,163-174,176,180,185,188,192,194,196,199-210,212,214-220,225,229-326
+fivetran/framework/resources/imported_config_fields_test.go
+  s_d418b1ef941395::t_958f0b7be3a7b8 10,75-142
+templates/guides/account_external_logging_v2_migration.md.tmpl
+  s_d418b1ef941395::t_3ab37966a3a43d 115
+templates/resources/destination_v2.md.tmpl
+  s_d418b1ef941395::t_30cc5b60870c22 87
+templates/resources/external_logging_v2.md.tmpl
+  s_d418b1ef941395::t_a6760da98327af 123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "61b794107b16a3e9aecc62c0a3d907df14bc6657",
+  "prompts": {},
+  "sessions": {
+    "s_d418b1ef941395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "972d8505-e330-49c0-a49e-78353977c1d5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
