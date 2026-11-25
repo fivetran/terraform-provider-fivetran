@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.57...HEAD)
+
+## [v1.9.57](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...v1.9.57) - 2026-11-25
 
 ### Added
 - `fivetran_connection_v2`: new write-only `auth_secrets` attribute ([public preview](https://fivetran.com/docs/core-concepts#releasephases)) for secret `auth` fields, such as client secrets and refresh tokens. It works like `config_secrets`: it accepts ephemeral values and is never stored in the plan or state. Its fields are merged with `auth` when sent to the API, and a field can't be set in both. Change the new `auth_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
