@@ -110,6 +110,10 @@ func fillMissingImmutable(planValues, stateValues map[string]interface{}, slot *
 
 		if prop.Immutable {
 			if inState {
+				// The API may return an immutable object without some of its children.
+				if value, changed := fillMissingImmutableChildren(planValue, stateValue, fieldPath, service, valuePath, basePath != "", diags); changed {
+					set(key, value)
+				}
 				continue
 			}
 			imported, isSchemaNameField, ok := importedSchemaNameValue(key, name)
@@ -170,6 +174,71 @@ func fillMissingImmutable(planValues, stateValues map[string]interface{}, slot *
 		return stateValues, false
 	}
 	return filled, true
+}
+
+// fillMissingImmutableChildren returns stateValue with the children of an immutable value that are
+// set in planValue but missing from the imported state, so the whole-value comparison doesn't treat
+// them as changed. It walks objects and same-length lists (not set-typed ones); children present in
+// both are left for the usual comparison. sentWithParent is true when the immutable value is nested
+// under a mutable parent, which the patch builder sends whole. stateValue is never modified.
+func fillMissingImmutableChildren(planValue, stateValue interface{}, fieldPath path.Path, service, valuePath string, sentWithParent bool, diags *diag.Diagnostics) (interface{}, bool) {
+	switch planNested := planValue.(type) {
+	case map[string]interface{}:
+		stateNested, ok := stateValue.(map[string]interface{})
+		if !ok {
+			return stateValue, false
+		}
+		var filled map[string]interface{}
+		set := func(key string, value interface{}) {
+			if filled == nil {
+				filled = make(map[string]interface{}, len(stateNested)+1)
+				for k, v := range stateNested {
+					filled[k] = v
+				}
+			}
+			filled[key] = value
+		}
+		for key, planChild := range planNested {
+			if core.IsDynamicUnknownValue(planChild) {
+				continue
+			}
+			stateChild, inState := stateNested[key]
+			if !inState {
+				addMissingImmutableWarning(fieldPath.AtName(key), sentWithParent, diags)
+				set(key, planChild)
+				continue
+			}
+			if value, changed := fillMissingImmutableChildren(planChild, stateChild, fieldPath.AtName(key), service, valuePath+"."+key, sentWithParent, diags); changed {
+				set(key, value)
+			}
+		}
+		if filled == nil {
+			return stateValue, false
+		}
+		return filled, true
+	case []interface{}:
+		stateItems, ok := stateValue.([]interface{})
+		// A different length is a real change, and set-typed items have no stable position.
+		if !ok || len(stateItems) != len(planNested) || core.IsSetTypedField(service, valuePath) {
+			return stateValue, false
+		}
+		var items []interface{}
+		for i, planItem := range planNested {
+			value, changed := fillMissingImmutableChildren(planItem, stateItems[i], fieldPath.AtListIndex(i), service, valuePath, sentWithParent, diags)
+			if !changed {
+				continue
+			}
+			if items == nil {
+				items = append([]interface{}(nil), stateItems...)
+			}
+			items[i] = value
+		}
+		if items == nil {
+			return stateValue, false
+		}
+		return items, true
+	}
+	return stateValue, false
 }
 
 func addMissingImmutableWarning(fieldPath path.Path, nested bool, diags *diag.Diagnostics) {

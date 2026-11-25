@@ -8,6 +8,7 @@ import (
 	"github.com/fivetran/go-fivetran/metadata"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -185,6 +186,10 @@ func TestFillImportedImmutableFieldsNested(t *testing.T) {
 	t.Parallel()
 
 	slot := &metadata.Property{Properties: map[string]*metadata.Property{
+		"settings": {Type: "object", Immutable: true, Properties: map[string]*metadata.Property{
+			"region": {Type: "string"},
+			"tier":   {Type: "string"},
+		}},
 		"client_access": {Type: "object", Properties: map[string]*metadata.Property{
 			"client_id":     {Type: "string", Immutable: true},
 			"client_secret": {Type: "string"},
@@ -223,6 +228,20 @@ func TestFillImportedImmutableFieldsNested(t *testing.T) {
 			want:  map[string]interface{}{"client_access": map[string]interface{}{"client_id": "old"}},
 		},
 		{
+			name:         "immutable object returned without a child",
+			plan:         map[string]interface{}{"settings": map[string]interface{}{"region": "eu", "tier": "gold"}},
+			state:        map[string]interface{}{"settings": map[string]interface{}{"region": "eu"}},
+			want:         map[string]interface{}{"settings": map[string]interface{}{"region": "eu", "tier": "gold"}},
+			wantWarnings: 1,
+		},
+		{
+			// A child that differs is a real change and is left for the comparison to replace.
+			name:  "immutable object child differs",
+			plan:  map[string]interface{}{"settings": map[string]interface{}{"region": "us"}},
+			state: map[string]interface{}{"settings": map[string]interface{}{"region": "eu"}},
+			want:  map[string]interface{}{"settings": map[string]interface{}{"region": "eu"}},
+		},
+		{
 			name: "list items",
 			plan: map[string]interface{}{"accounts": []interface{}{
 				map[string]interface{}{"id": "a", "name": "A"},
@@ -252,6 +271,42 @@ func TestFillImportedImmutableFieldsNested(t *testing.T) {
 			}
 			assertErrorCount(t, diags, 0)
 			assertWarningCount(t, diags, tt.wantWarnings)
+		})
+	}
+}
+
+// After the fill, the replacement check finds no change for an immutable object the API returned
+// without a child, and still replaces when a child really differs.
+func TestFillImportedImmutableFieldsAvoidsReplacement(t *testing.T) {
+	t.Parallel()
+
+	slot := &metadata.Property{Properties: map[string]*metadata.Property{
+		"settings": {Type: "object", Immutable: true, Properties: map[string]*metadata.Property{
+			"region": {Type: "string"},
+			"tier":   {Type: "string"},
+		}},
+	}}
+	state := map[string]interface{}{"settings": map[string]interface{}{"region": "eu"}}
+
+	for _, tt := range []struct {
+		name        string
+		plan        map[string]interface{}
+		wantReplace bool
+	}{
+		{"missing child", map[string]interface{}{"settings": map[string]interface{}{"region": "eu", "tier": "gold"}}, false},
+		{"changed child", map[string]interface{}{"settings": map[string]interface{}{"region": "us", "tier": "gold"}}, true},
+	} {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var diags diag.Diagnostics
+			filled := fillImportedImmutableFields(tt.plan, state, slot, path.Root("config"), true, types.StringValue("pg"), "", &diags)
+			resp := &resource.ModifyPlanResponse{}
+			got := appendImmutableRequiresReplace(tt.plan, filled, slot, path.Root("config"), resp, "", "", connectionWording)
+			if got != tt.wantReplace {
+				t.Fatalf("replacement = %v, want %v", got, tt.wantReplace)
+			}
 		})
 	}
 }
