@@ -112,7 +112,7 @@ terraform import fivetran_external_logging_v2.account_log account
 
 - Secret fields (`format: password` in log service metadata) aren't imported into state. When they're set in `config`, the first apply sends them in an in-place update. The log service isn't recreated.
 - When metadata marks a secret as immutable, the plan warns that Terraform can't compare it with the imported state. The value isn't sent and doesn't recreate the log service.
-- Imported `config` fields that the configuration leaves out stop being tracked, without being cleared.
+- Imported `config` fields that the configuration leaves out aren't shown as removed and aren't cleared. If the same plan changes other `config` fields, the plan shows them as removed and warns about them, and the apply stops tracking them without clearing them.
 
 ## After migrating
 

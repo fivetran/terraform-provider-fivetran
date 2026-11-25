@@ -400,7 +400,9 @@ func (r *accountExternalLoggingV2) ModifyPlan(ctx context.Context, req resource.
 	if req.Plan.Raw.IsNull() {
 		return
 	}
-	warnUndeclaredImportedConfigFields(ctx, req, resp, "log service")
+	if planUndeclaredImportedConfig(ctx, req, resp, "log service") {
+		defer restoreUnchangedImportedPlan(ctx, req, resp)
+	}
 	if r.GetSkipPlanTimeValidation() {
 		return
 	}

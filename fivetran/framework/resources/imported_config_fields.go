@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 // importedConfigFieldsKey is the private state key that lists the top-level config fields
@@ -158,44 +160,168 @@ func importedConfigPatchFilter(ctx context.Context, private privateStateGetter, 
 	return undeclaredImportedConfigFields(imported, plan, state)
 }
 
-// warnUndeclaredImportedConfigFields warns at plan time that imported config fields missing from
-// the configuration will only stop being tracked, not be cleared. objectName names the managed
-// object in the message, for example "destination".
-func warnUndeclaredImportedConfigFields(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse, objectName string) {
+// planUndeclaredImportedConfig keeps the prior config in the plan when the configuration differs
+// from it only by imported fields it doesn't declare, so those fields don't show as removed.
+// Terraform accepts a planned value that differs from the configuration when it is exactly the
+// prior value. The fields stay in state, are refreshed by Read, and are never sent to the API.
+// It returns true when it planned the prior config; the caller then defers
+// restoreUnchangedImportedPlan so that an import with no other change plans nothing.
+//
+// When config has other changes too (another field changes, a field moves to config_secrets, or a
+// value is unknown until apply), the plan must follow the configuration: the undeclared fields show
+// as removed, the update stops tracking them without clearing them, and a warning says so.
+// objectName names the managed object in the warning, for example "destination".
+func planUndeclaredImportedConfig(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse, objectName string) bool {
 	if req.Plan.Raw.IsNull() || req.State.Raw.IsNull() {
-		return
+		return false
 	}
 	imported, diags := loadImportedConfigFields(ctx, req.Private)
 	if diags.HasError() || len(imported) == 0 {
-		return
+		return false
 	}
 
 	var planConfig, stateConfig types.Dynamic
 	if d := req.Plan.GetAttribute(ctx, path.Root("config"), &planConfig); d.HasError() || planConfig.IsUnknown() || planConfig.IsUnderlyingValueUnknown() {
-		return
+		return false
 	}
 	if d := req.State.GetAttribute(ctx, path.Root("config"), &stateConfig); d.HasError() {
-		return
+		return false
 	}
 	planMap, d := core.DynamicToMapPreserveUnknown(ctx, planConfig)
 	if d.HasError() {
-		return
+		return false
 	}
-	stateMap, d := core.DynamicToMap(ctx, stateConfig)
+	stateMap, d := core.DynamicToMapPreserveUnknown(ctx, stateConfig)
 	if d.HasError() {
-		return
+		return false
 	}
 
-	fields := undeclaredImportedConfigFields(imported, planMap, stateMap)
-	if len(fields) == 0 {
-		return
+	// A field set in config_secrets is declared: it moves out of config, which is a real change.
+	var secretsDiags diag.Diagnostics
+	secrets, secretsUnknown := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, true, &secretsDiags)
+	if secretsDiags.HasError() {
+		return false
 	}
+	var fields []string
+	for _, k := range undeclaredImportedConfigFields(imported, planMap, stateMap) {
+		if _, inSecrets := secrets[k]; !inSecrets {
+			fields = append(fields, k)
+		}
+	}
+	if len(fields) == 0 {
+		return false
+	}
+
+	// A wholly unknown config_secrets may move any field out of config.
+	if !secretsUnknown && configWithFieldsEqualsState(planMap, stateMap, fields) {
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("config"), stateConfig)...)
+		return !resp.Diagnostics.HasError()
+	}
+
 	resp.Diagnostics.AddAttributeWarning(
 		path.Root("config"),
 		"Imported Config Fields Not in Configuration",
 		fmt.Sprintf("These config fields were imported but are not set in your configuration: %s. "+
-			"Terraform will stop tracking them and leave their values on the %s unchanged, although the plan shows them as removed. "+
+			"Because config has other changes in this plan, the plan shows them as removed, but Terraform will only stop tracking them and leave their values on the %s unchanged. "+
 			"To keep managing a field, add it to config. To clear a field on the %s, set it to null in config.",
 			strings.Join(fields, ", "), objectName, objectName),
 	)
+	return false
+}
+
+// configWithFieldsEqualsState reports whether the planned config, with the given fields copied
+// from state, holds exactly the state values. A planned value that is still unknown never matches.
+func configWithFieldsEqualsState(plan, state map[string]interface{}, fields []string) bool {
+	if len(plan)+len(fields) != len(state) {
+		return false
+	}
+	for k, v := range plan {
+		stateValue, ok := state[k]
+		if !ok || containsDynamicUnknown(v) || !reflect.DeepEqual(v, stateValue) {
+			return false
+		}
+	}
+	return true
+}
+
+func containsDynamicUnknown(value interface{}) bool {
+	switch v := value.(type) {
+	case core.DynamicUnknownValue:
+		return true
+	case map[string]interface{}:
+		for _, item := range v {
+			if containsDynamicUnknown(item) {
+				return true
+			}
+		}
+	case []interface{}:
+		for _, item := range v {
+			if containsDynamicUnknown(item) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// restoreUnchangedImportedPlan plans the prior state when, after planUndeclaredImportedConfig kept
+// the prior config, nothing else changes. Terraform's proposed plan differed from state in config,
+// so the framework already marked every computed attribute that is null in the configuration as
+// unknown, which would still plan an in-place update. It does nothing when the plan has errors, a
+// replacement, or any other change.
+func restoreUnchangedImportedPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if resp.Diagnostics.HasError() || len(resp.RequiresReplace) > 0 {
+		return
+	}
+	if planUnchangedExceptComputedUnknowns(resp.Plan.Raw, req.Config.Raw, req.State.Raw) {
+		resp.Plan.Raw = req.State.Raw.Copy()
+	}
+}
+
+// planUnchangedExceptComputedUnknowns reports whether plan equals state, except for unknown values
+// at paths that are null in the configuration (computed attributes the framework marked unknown).
+// An unknown value that comes from the configuration is a real change.
+func planUnchangedExceptComputedUnknowns(plan, config, state tftypes.Value) bool {
+	if plan.Equal(state) {
+		return true
+	}
+	if !plan.IsKnown() {
+		return config.IsNull()
+	}
+	if plan.IsNull() || state.IsNull() || !state.IsKnown() || !plan.Type().Is(tftypes.Object{}) || !state.Type().Is(tftypes.Object{}) {
+		return false
+	}
+
+	var planAttrs, stateAttrs, configAttrs map[string]tftypes.Value
+	if err := plan.As(&planAttrs); err != nil {
+		return false
+	}
+	if err := state.As(&stateAttrs); err != nil {
+		return false
+	}
+	if !config.IsNull() {
+		if !config.IsKnown() || !config.Type().Is(tftypes.Object{}) {
+			return false
+		}
+		if err := config.As(&configAttrs); err != nil {
+			return false
+		}
+	}
+	if len(planAttrs) != len(stateAttrs) {
+		return false
+	}
+	for name, planValue := range planAttrs {
+		stateValue, ok := stateAttrs[name]
+		if !ok {
+			return false
+		}
+		configValue, ok := configAttrs[name]
+		if !ok {
+			configValue = tftypes.NewValue(planValue.Type(), nil)
+		}
+		if !planUnchangedExceptComputedUnknowns(planValue, configValue, stateValue) {
+			return false
+		}
+	}
+	return true
 }
