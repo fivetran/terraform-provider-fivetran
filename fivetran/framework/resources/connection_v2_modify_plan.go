@@ -146,8 +146,8 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	imported, diags := isConnectionV2Imported(ctx, req.Private)
 	resp.Diagnostics.Append(diags...)
 	if imported {
-		compareConfig = fillImportedImmutableFields(planConfig, stateConfig, &meta.Config, path.Root("config"), true, state.Name, &resp.Diagnostics)
-		compareAuth = fillImportedImmutableFields(planAuth, stateAuth, &meta.Auth, path.Root("auth"), false, state.Name, &resp.Diagnostics)
+		compareConfig = fillImportedImmutableFields(planConfig, stateConfig, &meta.Config, path.Root("config"), true, state.Name, plan.Service.ValueString(), &resp.Diagnostics)
+		compareAuth = fillImportedImmutableFields(planAuth, stateAuth, &meta.Auth, path.Root("auth"), false, state.Name, plan.Service.ValueString(), &resp.Diagnostics)
 	}
 
 	service := plan.Service.ValueString()

@@ -88,6 +88,31 @@ func TestFillImportedImmutableFields(t *testing.T) {
 			want:      map[string]interface{}{},
 		},
 		{
+			name:      "single-table schema matches the schema part of name",
+			plan:      map[string]interface{}{"schema": "sales", "table": "orders"},
+			state:     map[string]interface{}{},
+			isConfig:  true,
+			stateName: types.StringValue("sales.orders"),
+			want:      map[string]interface{}{"schema": "sales", "table": "orders"},
+		},
+		{
+			name:      "single-table table differs from name",
+			plan:      map[string]interface{}{"schema": "sales", "table": "other"},
+			state:     map[string]interface{}{},
+			isConfig:  true,
+			stateName: types.StringValue("sales.orders"),
+			want:      map[string]interface{}{"schema": "sales"},
+		},
+		{
+			name:      "schema_prefix compares the whole name",
+			plan:      map[string]interface{}{"schema_prefix": "sales"},
+			state:     map[string]interface{}{},
+			isConfig:  true,
+			stateName: types.StringValue("sales.orders"),
+			want:      map[string]interface{}{},
+		},
+		{
+			// A name without a table part can't hold the table, so it can't be checked.
 			name:         "other immutable field missing",
 			plan:         map[string]interface{}{"table": "t"},
 			state:        map[string]interface{}{},
@@ -130,7 +155,7 @@ func TestFillImportedImmutableFields(t *testing.T) {
 			t.Parallel()
 
 			var diags diag.Diagnostics
-			got := fillImportedImmutableFields(tt.plan, tt.state, slot, path.Root("config"), tt.isConfig, tt.stateName, &diags)
+			got := fillImportedImmutableFields(tt.plan, tt.state, slot, path.Root("config"), tt.isConfig, tt.stateName, "", &diags)
 
 			if len(got) != len(tt.want) || (len(got) > 0 && !reflect.DeepEqual(got, tt.want)) {
 				t.Fatalf("filled state = %v, want %v", got, tt.want)
@@ -149,9 +174,84 @@ func TestFillImportedImmutableFieldsDoesNotModifyState(t *testing.T) {
 	}}
 	state := map[string]interface{}{"host": "h"}
 	var diags diag.Diagnostics
-	fillImportedImmutableFields(map[string]interface{}{"table": "t"}, state, slot, path.Root("config"), true, types.StringNull(), &diags)
+	fillImportedImmutableFields(map[string]interface{}{"table": "t"}, state, slot, path.Root("config"), true, types.StringNull(), "", &diags)
 
 	if _, ok := state["table"]; ok {
 		t.Fatalf("state = %v, want the input map unchanged", state)
+	}
+}
+
+func TestFillImportedImmutableFieldsNested(t *testing.T) {
+	t.Parallel()
+
+	slot := &metadata.Property{Properties: map[string]*metadata.Property{
+		"client_access": {Type: "object", Properties: map[string]*metadata.Property{
+			"client_id":     {Type: "string", Immutable: true},
+			"client_secret": {Type: "string"},
+		}},
+		"accounts": {Type: "array", Items: &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{
+			"id":   {Type: "string", Immutable: true},
+			"name": {Type: "string"},
+		}}},
+	}}
+
+	tests := []struct {
+		name         string
+		plan         map[string]interface{}
+		state        map[string]interface{}
+		want         map[string]interface{}
+		wantWarnings int
+	}{
+		{
+			name:         "missing parent object",
+			plan:         map[string]interface{}{"client_access": map[string]interface{}{"client_id": "c", "client_secret": "s"}},
+			state:        nil,
+			want:         map[string]interface{}{"client_access": map[string]interface{}{"client_id": "c"}},
+			wantWarnings: 1,
+		},
+		{
+			name:         "parent object without the immutable field",
+			plan:         map[string]interface{}{"client_access": map[string]interface{}{"client_id": "c", "client_secret": "s"}},
+			state:        map[string]interface{}{"client_access": map[string]interface{}{"client_secret": "old"}},
+			want:         map[string]interface{}{"client_access": map[string]interface{}{"client_id": "c", "client_secret": "old"}},
+			wantWarnings: 1,
+		},
+		{
+			name:  "nested immutable field in state is left for the usual comparison",
+			plan:  map[string]interface{}{"client_access": map[string]interface{}{"client_id": "new"}},
+			state: map[string]interface{}{"client_access": map[string]interface{}{"client_id": "old"}},
+			want:  map[string]interface{}{"client_access": map[string]interface{}{"client_id": "old"}},
+		},
+		{
+			name: "list items",
+			plan: map[string]interface{}{"accounts": []interface{}{
+				map[string]interface{}{"id": "a", "name": "A"},
+				map[string]interface{}{"id": "b", "name": "B"},
+			}},
+			state: map[string]interface{}{"accounts": []interface{}{
+				map[string]interface{}{"id": "a", "name": "A"},
+			}},
+			want: map[string]interface{}{"accounts": []interface{}{
+				map[string]interface{}{"id": "a", "name": "A"},
+				map[string]interface{}{"id": "b"},
+			}},
+			wantWarnings: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var diags diag.Diagnostics
+			got := fillImportedImmutableFields(tt.plan, tt.state, slot, path.Root("auth"), false, types.StringNull(), "", &diags)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatalf("filled state = %v, want %v", got, tt.want)
+			}
+			assertErrorCount(t, diags, 0)
+			assertWarningCount(t, diags, tt.wantWarnings)
+		})
 	}
 }
