@@ -1,0 +1,24 @@
+fivetran/framework/resources/connection_v2_imported_test.go
+  s_d418b1ef941395::t_7113ec0782a754 11,277-309
+  s_d418b1ef941395::t_d6f084bd6fb237 189-192,230-243
+  s_d418b1ef941395::t_5d2e1a636f0886 310-312
+fivetran/framework/resources/connection_v2_imported.go
+  s_d418b1ef941395::t_d6f084bd6fb237 113-116,179-241
+  s_d418b1ef941395::t_f47907c0617c7e 242-243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "77992915b326182642827a583b9c287b2105ed9d",
+  "prompts": {},
+  "sessions": {
+    "s_d418b1ef941395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "972d8505-e330-49c0-a49e-78353977c1d5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
