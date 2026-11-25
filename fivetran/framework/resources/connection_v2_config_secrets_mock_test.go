@@ -86,10 +86,15 @@ func postgresSecretsTfConfig(configPassword, secret string, version int) string 
 type configSecretsMock struct {
 	service          string
 	metadataResponse string
-	storedConfig     map[string]interface{}
-	postBodies       []map[string]interface{}
-	patchBodies      []map[string]interface{}
-	deleteHandler    *mock.Handler
+	// schema is the top-level schema in responses; "postgres" when empty.
+	schema string
+	// hiddenConfig are config fields left out of responses, like the API does for fields it
+	// returns elsewhere (schema_prefix comes back as the top-level schema).
+	hiddenConfig  []string
+	storedConfig  map[string]interface{}
+	postBodies    []map[string]interface{}
+	patchBodies   []map[string]interface{}
+	deleteHandler *mock.Handler
 }
 
 func (m *configSecretsMock) setup(t *testing.T) {
@@ -115,12 +120,19 @@ func (m *configSecretsMock) setup(t *testing.T) {
 		if _, ok := config["password"]; ok {
 			config["password"] = "******"
 		}
+		for _, k := range m.hiddenConfig {
+			delete(config, k)
+		}
+		schema := m.schema
+		if schema == "" {
+			schema = "postgres"
+		}
 		return map[string]interface{}{
 			"id":                       "connection_id",
 			"group_id":                 "group_id",
 			"service":                  service,
 			"service_version":          1,
-			"schema":                   "postgres",
+			"schema":                   schema,
 			"paused":                   true,
 			"destination_schema_names": "FIVETRAN_NAMING",
 			"status": map[string]interface{}{
