@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.57...HEAD)
 
+### Fixed
+- `fivetran_connection_v2`, `fivetran_destination_v2`, `fivetran_external_logging_v2` and `fivetran_account_external_logging_v2`: after `terraform import`, `config` fields the API returns but the configuration leaves out, such as defaults Fivetran added, no longer show as removed in the plan. They stay in state and aren't sent to the API, so an import whose configuration matches the imported values plans no changes. If the same plan changes other `config` fields or moves a field to `config_secrets`, the plan still shows them as removed and warns, and the apply stops tracking them without clearing them, as before.
+
 ## [v1.9.57](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...v1.9.57) - 2026-11-25
 
 ### Added

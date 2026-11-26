@@ -120,7 +120,7 @@ terraform import fivetran_external_logging_v2.my_imported_log {destination ID, a
 
 -> The API masks secrets, so imported state does not contain them. Add the secret values to `config` or `config_secrets` yourself. Readonly fields are not imported, because `config` doesn't accept them.
 
--> Import tracks every config field the API returns, including defaults Fivetran added. If your configuration leaves some of them out, the first apply stops tracking them without changing them on the log service, and the plan shows a warning that lists them. To clear such a field, set it to `null` in `config`.
+-> Import tracks every config field the API returns, including defaults Fivetran added. A field your configuration leaves out stays in state and isn't sent to the API, so the plan doesn't show it as removed. If the same plan changes other `config` fields, the plan does show it as removed and a warning lists it: the apply stops tracking it without changing it on the log service. To clear such a field, set it to `null` in `config`.
 
 ### Import with an `import` block
 

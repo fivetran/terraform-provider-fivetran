@@ -18,7 +18,9 @@ func (r *destinationV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanR
 	if req.Plan.Raw.IsNull() {
 		return
 	}
-	warnUndeclaredImportedConfigFields(ctx, req, resp, "destination")
+	if planUndeclaredImportedConfig(ctx, req, resp, "destination") {
+		defer restoreUnchangedImportedPlan(ctx, req, resp)
+	}
 
 	var plan model.DestinationV2ResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)

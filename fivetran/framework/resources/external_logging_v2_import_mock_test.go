@@ -46,8 +46,9 @@ const externalLoggingV2ImportMockConfig = `
 			config_secrets_version = 1
 		}`
 
-// Import tracks the defaults the API returns (port, channel). Applying a configuration that
-// doesn't declare them must not send null for them, which would clear them on the log service.
+// Import tracks the defaults the API returns (port, channel). A configuration that doesn't declare
+// them keeps them in state instead of planning their removal, and never sends null for them,
+// which would clear them on the log service.
 // The first config_secrets_version sends the mutable token, but never the immutable api_key.
 func TestExternalLoggingV2ImportUndeclaredFieldsAndSecretsMock(t *testing.T) {
 	var logData map[string]interface{}
@@ -134,7 +135,7 @@ func TestExternalLoggingV2ImportUndeclaredFieldsAndSecretsMock(t *testing.T) {
 					func(s *terraform.State) error {
 						tfmock.AssertEqual(t, patchHandler.Interactions, 1)
 						patch := patchConfigs[0]
-						// undeclared imported fields stop being tracked but are not cleared
+						// undeclared imported fields are not sent, so they are not cleared
 						tfmock.AssertKeyDoesNotExist(t, patch, "port")
 						tfmock.AssertKeyDoesNotExist(t, patch, "channel")
 						config := logData["config"].(map[string]interface{})
@@ -146,8 +147,8 @@ func TestExternalLoggingV2ImportUndeclaredFieldsAndSecretsMock(t *testing.T) {
 						return nil
 					},
 					resource.TestCheckResourceAttr(name, "config.hostname", "splunk.example.com"),
-					resource.TestCheckNoResourceAttr(name, "config.port"),
-					resource.TestCheckNoResourceAttr(name, "config.channel"),
+					resource.TestCheckResourceAttr(name, "config.port", "8088"),
+					resource.TestCheckResourceAttr(name, "config.channel", "main"),
 					resource.TestCheckNoResourceAttr(name, "config.token"),
 					resource.TestCheckResourceAttr(name, "config_secrets_version", "1"),
 				),
