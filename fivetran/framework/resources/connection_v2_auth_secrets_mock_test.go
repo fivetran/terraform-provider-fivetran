@@ -507,3 +507,51 @@ removed {
 		},
 	})
 }
+
+// Without auth_secrets_version, an imported connection keeps its credentials: auth_secrets are
+// write-only and the version stays unset, so the first plan after import is empty and nothing is
+// sent.
+func TestConnectionV2AuthSecretsAfterImportWithoutVersionMock(t *testing.T) {
+	m := &authSecretsMock{service: "auth_service_import_no_version"}
+	const name = "fivetran_connection_v2.test"
+	created := authSecretsTfConfig(m.service, "secret-v1", `client_id = "client"`,
+		`client_secret = ephemeral.testsecret_value.pw.secret`, 1, "")
+	imported := authSecretsTfConfig(m.service, "secret-v1", "", `client_id = "client"
+    client_secret = ephemeral.testsecret_value.pw.secret`, -1, "")
+
+	resource.Test(t, resource.TestCase{
+		TerraformVersionChecks:   configSecretsVersionChecks,
+		PreCheck:                 func() { m.setup(t) },
+		ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactoriesWithEphemeralSecret,
+		Steps: []resource.TestStep{
+			{Config: created},
+			// Forget the connection without deleting it, then import it.
+			{
+				Config: `
+removed {
+  from = fivetran_connection_v2.test
+  lifecycle {
+    destroy = false
+  }
+}`,
+			},
+			{
+				Config:             imported,
+				ResourceName:       name,
+				ImportState:        true,
+				ImportStateId:      "connection_id",
+				ImportStatePersist: true,
+			},
+			{
+				Config: imported,
+				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{
+					plancheck.ExpectEmptyPlan(),
+				}},
+				Check: func(s *terraform.State) error {
+					tfmock.AssertEqual(t, len(m.patchBodies), 0)
+					return nil
+				},
+			},
+		},
+	})
+}
