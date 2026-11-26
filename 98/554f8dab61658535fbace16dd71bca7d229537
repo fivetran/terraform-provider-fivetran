@@ -1,0 +1,23 @@
+docs/resources/connection_v2.md
+  s_d418b1ef941395::t_f33b06295826a0 110-113
+fivetran/framework/resources/connection_v2_auth_secrets_mock_test.go
+  s_d418b1ef941395::t_61af89002057dd 510-557
+templates/resources/connection_v2.md.tmpl
+  s_d418b1ef941395::t_42faf309c4ad42 110-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "98554f8dab61658535fbace16dd71bca7d229537",
+  "prompts": {},
+  "sessions": {
+    "s_d418b1ef941395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "972d8505-e330-49c0-a49e-78353977c1d5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
