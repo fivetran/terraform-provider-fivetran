@@ -133,8 +133,8 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	// configMap stays the state mask below, and data.Auth is what is stored for auth, so the
 	// config_secrets and auth_secrets fields never reach state.
-	requestConfig := mergeConnectionV2Secrets(configMap, secrets)
-	requestAuth := mergeConnectionV2Secrets(authMap, authSecrets)
+	requestConfig := core.CoerceMapToMetadata(mergeConnectionV2Secrets(configMap, secrets), &meta.Config)
+	requestAuth := core.CoerceMapToMetadata(mergeConnectionV2Secrets(authMap, authSecrets), &meta.Auth)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
@@ -296,9 +296,9 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	configPatch = applyConnectionV2SecretsToPatch(configPatch, secrets, stateConfig, &meta.Config, configSecretsVersionChanged)
+	configPatch = core.CoerceMapToMetadata(applyConnectionV2SecretsToPatch(configPatch, secrets, stateConfig, &meta.Config, configSecretsVersionChanged), &meta.Config)
 	authPatch := core.PrepareConfigPatchDynamicWithService(planAuth, stateAuth, &meta.Auth, service)
-	authPatch = applyConnectionV2SecretsToPatch(authPatch, authSecrets, stateAuth, &meta.Auth, authSecretsVersionChanged)
+	authPatch = core.CoerceMapToMetadata(applyConnectionV2SecretsToPatch(authPatch, authSecrets, stateAuth, &meta.Auth, authSecretsVersionChanged), &meta.Auth)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)

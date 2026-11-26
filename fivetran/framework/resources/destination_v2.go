@@ -136,7 +136,7 @@ func (r *destinationV2) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 	// configMap stays the projection mask, so secrets are never tracked in state.
-	requestConfig := mergeConfigSecrets(configMap, secrets)
+	requestConfig := core.CoerceMapToMetadata(mergeConfigSecrets(configMap, secrets), &meta.Config)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, destinationV2RunSetupTestsDefault)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, destinationV2TrustCertificatesDefault)
@@ -281,6 +281,7 @@ func (r *destinationV2) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 	applyConfigSecretsToPatch(configPatch, secrets, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
+	configPatch = core.CoerceMapToMetadata(configPatch, &meta.Config)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, destinationV2RunSetupTestsDefault)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, destinationV2TrustCertificatesDefault)

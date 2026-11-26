@@ -378,7 +378,7 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property, servi
 			}
 		}
 
-		result[key] = coerceToMetadataType(remoteVal, prop)
+		result[key] = projectScalar(remoteVal, maskVal, prop)
 	}
 
 	return result
@@ -394,7 +394,7 @@ func projectList(remote, mask []interface{}, itemSlot *metadata.Property, servic
 	}
 	result := make([]interface{}, len(remote))
 	for i, remoteItem := range remote {
-		result[i] = coerceToMetadataType(remoteItem, itemSlot)
+		result[i] = projectScalar(remoteItem, mask[i], itemSlot)
 		maskItem, ok := mask[i].(map[string]interface{})
 		if !ok {
 			continue
@@ -436,6 +436,65 @@ func coerceToMetadataType(value interface{}, prop *metadata.Property) interface{
 		}
 	}
 	return value
+}
+
+// CoerceToMetadataType is coerceToMetadataType for a single configured scalar, with the number
+// normalized like the values read from the configuration (int64 when whole, float64 otherwise).
+// A configuration can hold a string for a numeric or boolean field: port = "5432", or a
+// conditional whose branches have different keys, which Terraform unifies to map(string).
+func CoerceToMetadataType(value interface{}, prop *metadata.Property) interface{} {
+	return normalizeNumbers(coerceToMetadataType(value, prop))
+}
+
+// CoerceToMetadata returns value with every string converted to the scalar type its metadata
+// declares, walking objects (slot.Properties) and lists (slot.Items). Strings that don't parse as
+// the declared type, unknown values and fields without metadata are kept as-is. value is never
+// modified.
+func CoerceToMetadata(value interface{}, slot *metadata.Property) interface{} {
+	if slot == nil {
+		return value
+	}
+	switch v := value.(type) {
+	case map[string]interface{}:
+		return CoerceMapToMetadata(v, slot)
+	case []interface{}:
+		if slot.Items == nil {
+			return value
+		}
+		result := make([]interface{}, len(v))
+		for i, item := range v {
+			result[i] = CoerceToMetadata(item, slot.Items)
+		}
+		return result
+	case string:
+		return CoerceToMetadataType(v, slot)
+	}
+	return value
+}
+
+// CoerceMapToMetadata is CoerceToMetadata for a config or auth map; nil stays nil.
+func CoerceMapToMetadata(values map[string]interface{}, slot *metadata.Property) map[string]interface{} {
+	if values == nil || slot == nil {
+		return values
+	}
+	result := make(map[string]interface{}, len(values))
+	for k, v := range values {
+		result[k] = CoerceToMetadata(v, SlotProp(slot, k))
+	}
+	return result
+}
+
+// projectScalar returns the remote scalar converted to the metadata type, or the mask value when
+// it is a string that converts to the same value: a configuration that writes port = "5432" keeps
+// the string in state instead of showing a change against the number the API returns.
+func projectScalar(remoteVal, maskVal interface{}, prop *metadata.Property) interface{} {
+	remote := coerceToMetadataType(remoteVal, prop)
+	if maskString, ok := maskVal.(string); ok && prop != nil && prop.Type != "string" {
+		if reflect.DeepEqual(CoerceToMetadataType(maskString, prop), normalizeNumbers(remote)) {
+			return maskVal
+		}
+	}
+	return remote
 }
 
 // alignSetOrder returns the remote elements of a set-typed list in the order of the prior (mask) list.
@@ -496,6 +555,10 @@ func PrepareConfigPatchDynamicWithService(plan, state map[string]interface{}, sl
 }
 
 func prepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadata.Property, service string) map[string]interface{} {
+	// A string in the configuration for a numeric or boolean field is sent as that type, and
+	// matches the same value in state.
+	plan = CoerceMapToMetadata(plan, slot)
+	state = CoerceMapToMetadata(state, slot)
 	patch := make(map[string]interface{})
 
 	for k, planVal := range plan {

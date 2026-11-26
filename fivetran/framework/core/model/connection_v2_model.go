@@ -194,7 +194,9 @@ func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, da
 		configSlot = &meta.Config
 	}
 	projectedConfig := core.ProjectDynamicWithService(config, configMask, configSlot, data.Service)
-	dynamicConfig, dynamicDiags := core.MapToDynamic(ctx, projectedConfig)
+	// d.Config is the planned or prior config: keep its type (for example a map from
+	// tomap() or a conditional) when it already holds the projected values.
+	dynamicConfig, dynamicDiags := core.MapToDynamicWithTemplate(ctx, projectedConfig, d.Config)
 	diags.Append(dynamicDiags...)
 	if !diags.HasError() {
 		d.Config = dynamicConfig

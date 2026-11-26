@@ -244,7 +244,7 @@ func appendImmutableRequiresReplace(planValues, stateValues map[string]interface
 			}
 			continue
 		}
-		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualAtPath(planValue, stateValue, service, valuePath)) {
+		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualAtPath(core.CoerceToMetadata(planValue, prop), core.CoerceToMetadata(stateValue, prop), service, valuePath)) {
 			resp.RequiresReplace.Append(fieldPath)
 			wording.replacementWarning(fieldPath, &resp.Diagnostics)
 			hasReplacement = true

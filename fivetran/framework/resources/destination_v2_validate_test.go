@@ -88,8 +88,9 @@ func TestDestinationV2ValidateConfigRejectsInvalidConfig(t *testing.T) {
 			wantPath: path.Root("config").AtName("hots"),
 		},
 		{
+			// A string that parses as an integer is accepted (see the coercion tests); this one doesn't.
 			name:     "wrong type",
-			config:   map[string]interface{}{"port": "443"},
+			config:   map[string]interface{}{"port": "https"},
 			wantPath: path.Root("config").AtName("port"),
 		},
 		{

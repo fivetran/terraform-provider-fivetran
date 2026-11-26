@@ -792,3 +792,87 @@ func TestMapToDynamicWithTemplate_BuildsObjectWhenValuesDifferOrTemplateIsMissin
 		}
 	}
 }
+
+func coercionSlot() *metadata.Property {
+	return makeSlot(map[string]*metadata.Property{
+		"port":    {Type: "integer"},
+		"ratio":   {Type: "number"},
+		"enabled": {Type: "boolean"},
+		"host":    {Type: "string"},
+		"ports":   {Type: "array", Items: &metadata.Property{Type: "integer"}},
+		"tunnel": {Type: "object", Properties: map[string]*metadata.Property{
+			"port": {Type: "integer"},
+		}},
+	})
+}
+
+func TestCoerceMapToMetadata(t *testing.T) {
+	in := map[string]interface{}{
+		"port":    "5432",
+		"ratio":   "1.5",
+		"enabled": "true",
+		"host":    "123",
+		"ports":   []interface{}{"22", "23"},
+		"tunnel":  map[string]interface{}{"port": "22"},
+		"unknown": "7",
+	}
+	want := map[string]interface{}{
+		"port":    int64(5432),
+		"ratio":   1.5,
+		"enabled": true,
+		"host":    "123",
+		"ports":   []interface{}{int64(22), int64(23)},
+		"tunnel":  map[string]interface{}{"port": int64(22)},
+		"unknown": "7",
+	}
+	got := CoerceMapToMetadata(in, coercionSlot())
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("CoerceMapToMetadata() = %#v, want %#v", got, want)
+	}
+	if in["port"] != "5432" {
+		t.Fatalf("input modified: %#v", in)
+	}
+	if got := CoerceToMetadataType("not-a-port", &metadata.Property{Type: "integer"}); got != "not-a-port" {
+		t.Fatalf("unparsable string = %#v, want it kept", got)
+	}
+	if got := CoerceToMetadataType("2", &metadata.Property{Type: "number"}); got != int64(2) {
+		t.Fatalf("whole number = %#v, want int64(2) like a configured number", got)
+	}
+	if got := CoerceMapToMetadata(in, nil); !reflect.DeepEqual(got, in) {
+		t.Fatalf("nil slot = %#v, want pass-through", got)
+	}
+}
+
+// A configured string for a numeric field stays in state when the API returns the same number, so
+// it doesn't show as a change; a different number is still drift.
+func TestProject_ConfiguredStringMatchingRemoteNumberKeepsString(t *testing.T) {
+	slot := coercionSlot()
+	mask := map[string]interface{}{"port": "5432", "ports": []interface{}{"22"}, "enabled": "true"}
+
+	got := ProjectDynamic(map[string]interface{}{"port": float64(5432), "ports": []interface{}{float64(22)}, "enabled": true}, mask, slot)
+	if !reflect.DeepEqual(got, mask) {
+		t.Fatalf("project() = %#v, want the configured strings %#v", got, mask)
+	}
+
+	got = ProjectDynamic(map[string]interface{}{"port": float64(5433), "ports": []interface{}{float64(22)}, "enabled": true}, mask, slot)
+	if got["port"] != float64(5433) {
+		t.Fatalf("project() port = %#v, want the drifted remote value", got["port"])
+	}
+}
+
+func TestPrepareConfigPatchDynamic_CoercesStrings(t *testing.T) {
+	slot := coercionSlot()
+
+	// The same value as a string and a number is unchanged.
+	if patch := PrepareConfigPatchDynamic(map[string]interface{}{"port": "5432"}, map[string]interface{}{"port": int64(5432)}, slot); len(patch) != 0 {
+		t.Fatalf("patch = %#v, want empty", patch)
+	}
+	// A changed or new value is sent as the declared type.
+	patch := PrepareConfigPatchDynamic(
+		map[string]interface{}{"port": "5433", "enabled": "false"},
+		map[string]interface{}{"port": "5432"}, slot)
+	want := map[string]interface{}{"port": int64(5433), "enabled": false}
+	if !reflect.DeepEqual(patch, want) {
+		t.Fatalf("patch = %#v, want %#v", patch, want)
+	}
+}

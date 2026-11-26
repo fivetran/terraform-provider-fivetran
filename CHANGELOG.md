@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.57...HEAD)
 
+### Fixed
+- `fivetran_connection_v2`, `fivetran_destination_v2`, `fivetran_external_logging_v2` and `fivetran_account_external_logging_v2`: a string in `config` or `auth` for a field that metadata declares as integer, number or boolean, such as `port = "5432"`, is now accepted when it parses as that type. It is sent to the API as that type, compares equal to the same value in state (so an unchanged immutable field no longer plans a replacement), and stays a string in state, so the next plan is empty. Strings that don't parse are still rejected. This also covers a conditional whose branches have different keys, which Terraform turns into a map of strings.
+- `fivetran_connection_v2` and `fivetran_destination_v2`: a `config` that is a map, for example from `tomap()` or such a conditional, no longer fails on apply with `Provider produced inconsistent result after apply: wrong final value type`.
+
 ## [v1.9.57](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...v1.9.57) - 2026-11-25
 
 ### Added

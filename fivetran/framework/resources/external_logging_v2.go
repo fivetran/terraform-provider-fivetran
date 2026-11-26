@@ -150,7 +150,11 @@ func (r *externalLoggingV2) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 	// configMap stays the projection mask, so secrets are never tracked in state.
-	requestConfig := mergeConfigSecrets(configMap, secrets)
+	var slot *metadata.Property
+	if meta != nil {
+		slot = &meta.Config
+	}
+	requestConfig := core.CoerceMapToMetadata(mergeConfigSecrets(configMap, secrets), slot)
 
 	enabled := core.GetBoolOrDefault(data.Enabled, true)
 	runSetupTests := core.GetBoolOrDefault(data.RunSetupTests, false)
@@ -277,7 +281,7 @@ func (r *externalLoggingV2) Update(ctx context.Context, req resource.UpdateReque
 	}
 	// Secrets are sent when config_secrets_version changes or when they move from config, without
 	// immutable and readonly fields, which ordinary config updates never send either.
-	configPatch = applyConnectionV2SecretsToPatch(configPatch, secrets, stateConfig, slot, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
+	configPatch = core.CoerceMapToMetadata(applyConnectionV2SecretsToPatch(configPatch, secrets, stateConfig, slot, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion)), slot)
 
 	enabledPlan := core.GetBoolOrDefault(plan.Enabled, true)
 	enabledChanged := enabledPlan != core.GetBoolOrDefault(state.Enabled, true)

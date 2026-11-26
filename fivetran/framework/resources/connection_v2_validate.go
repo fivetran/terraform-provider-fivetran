@@ -158,6 +158,8 @@ func validateDynamicValue(value interface{}, prop *metadata.Property, valuePath 
 		)
 		return
 	}
+	// A string that parses as the declared scalar type is accepted; it is sent as that type.
+	value = core.CoerceToMetadataType(value, prop)
 
 	switch prop.Type {
 	case "string":

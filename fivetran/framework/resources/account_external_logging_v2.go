@@ -147,7 +147,13 @@ func (r *accountExternalLoggingV2) Create(ctx context.Context, req resource.Crea
 		RunSetupTests(runSetupTests)
 	// An empty config is left out of the request, as it was before the SDK had account-level services.
 	if len(configMap) > 0 {
-		createSvc.ConfigCustom(&configMap)
+		// configMap stays the projection mask below.
+		var slot *metadata.Property
+		if meta != nil {
+			slot = &meta.Config
+		}
+		requestConfig := core.CoerceMapToMetadata(configMap, slot)
+		createSvc.ConfigCustom(&requestConfig)
 	}
 	response, err := createSvc.DoCustomWithUserAgentSuffix(ctx, accountExternalLoggingV2UserAgentSuffix)
 	if err != nil {
